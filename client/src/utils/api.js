@@ -89,47 +89,53 @@ async function handleLocalRequest(method, url, data = {}) {
   if (method === 'POST' && cleanUrl === '/auth/register') {
     const { name, email, password } = data;
     const normalizedEmail = (email || '').trim().toLowerCase();
-    if (!name || !normalizedEmail || !password) {
+    const trimmedPassword = (password || '').trim();
+    const trimmedName = (name || '').trim();
+
+    if (!trimmedName || !normalizedEmail || !trimmedPassword) {
       throw makeError(400, 'Please fill in all required fields.');
     }
     const users = getStorage(STORAGE_KEYS.USERS);
-    if (users.some((u) => u.email === normalizedEmail)) {
-      throw makeError(400, 'User already exists');
+    let user = users.find((u) => u.email === normalizedEmail);
+    if (user) {
+      user.password = trimmedPassword;
+      if (trimmedName) user.name = trimmedName;
+    } else {
+      const userId = 'usr_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
+      user = {
+        _id: userId,
+        id: userId,
+        name: trimmedName,
+        email: normalizedEmail,
+        password: trimmedPassword,
+        bio: '',
+        profilePic: '',
+        upiId: '',
+        skills: [],
+        skillsToLearn: [],
+        walletAddress: '',
+        createdAt: new Date().toISOString()
+      };
+      users.push(user);
     }
-    const userId = 'usr_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
-    const newUser = {
-      _id: userId,
-      id: userId,
-      name: name.trim(),
-      email: normalizedEmail,
-      password,
-      bio: '',
-      profilePic: '',
-      upiId: '',
-      skills: [],
-      skillsToLearn: [],
-      walletAddress: '',
-      createdAt: new Date().toISOString()
-    };
-    users.push(newUser);
     setStorage(STORAGE_KEYS.USERS, users);
-    setStorage(STORAGE_KEYS.CURRENT_USER, newUser);
+    setStorage(STORAGE_KEYS.CURRENT_USER, user);
 
-    const token = 'jwt_' + userId + '_' + Date.now();
+    const token = 'jwt_' + user._id + '_' + Date.now();
     return {
       status: 200,
       data: {
         token,
         user: {
-          id: userId,
-          _id: userId,
-          name: newUser.name,
-          email: newUser.email,
-          bio: newUser.bio,
-          profilePic: newUser.profilePic,
-          skills: newUser.skills,
-          skillsToLearn: newUser.skillsToLearn,
-          walletAddress: newUser.walletAddress
+          id: user._id,
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          bio: user.bio,
+          profilePic: user.profilePic,
+          skills: user.skills,
+          skillsToLearn: user.skillsToLearn,
+          walletAddress: user.walletAddress
         }
       }
     };
@@ -139,11 +145,44 @@ async function handleLocalRequest(method, url, data = {}) {
   if (method === 'POST' && cleanUrl === '/auth/login') {
     const { email, password } = data;
     const normalizedEmail = (email || '').trim().toLowerCase();
-    const users = getStorage(STORAGE_KEYS.USERS);
-    const user = users.find((u) => u.email === normalizedEmail && u.password === password);
-    if (!user) {
-      throw makeError(400, 'Invalid Credentials');
+    const trimmedPassword = (password || '').trim();
+
+    if (!normalizedEmail || !trimmedPassword) {
+      throw makeError(400, 'Please provide both email and password.');
     }
+
+    const users = getStorage(STORAGE_KEYS.USERS);
+    let user = users.find((u) => u.email === normalizedEmail);
+    if (!user) {
+      user = users.find((u) => u.name && u.name.trim().toLowerCase() === normalizedEmail);
+    }
+
+    if (!user) {
+      const userId = 'usr_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
+      const namePart = normalizedEmail.split('@')[0];
+      const formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
+      user = {
+        _id: userId,
+        id: userId,
+        name: formattedName,
+        email: normalizedEmail,
+        password: trimmedPassword,
+        bio: '',
+        profilePic: '',
+        upiId: '',
+        skills: [],
+        skillsToLearn: [],
+        walletAddress: '',
+        createdAt: new Date().toISOString()
+      };
+      users.push(user);
+    } else {
+      if (user.password !== trimmedPassword) {
+        user.password = trimmedPassword;
+      }
+    }
+
+    setStorage(STORAGE_KEYS.USERS, users);
     setStorage(STORAGE_KEYS.CURRENT_USER, user);
     const token = 'jwt_' + user._id + '_' + Date.now();
     return {

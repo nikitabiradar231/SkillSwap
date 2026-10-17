@@ -18,7 +18,7 @@ const Login = () => {
     setIsSubmitting(true);
     setError('');
     try {
-      await login(formData.email, formData.password);
+      await login(formData.email.trim(), formData.password.trim());
       navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.msg || 'Invalid email or password. Please try again.');

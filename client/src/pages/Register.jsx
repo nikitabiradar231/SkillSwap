@@ -14,7 +14,7 @@ const Register = () => {
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      await register(formData.name, formData.email, formData.password);
+      await register(formData.name.trim(), formData.email.trim(), formData.password.trim());
       navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.msg || 'Registration failed');
