@@ -51,6 +51,8 @@ const Notifications = () => {
       setLoading(false);
     };
     fetchAll();
+    const interval = setInterval(fetchAll, 4000);
+    return () => clearInterval(interval);
   }, []);
 
   const updateStatus = async (id, status, isSent) => {

@@ -26,6 +26,18 @@ const Sessions = () => {
   const [loading, setLoading] = useState(true);
   const [certModalSession, setCertModalSession] = useState(null);
   const [certifiedMap, setCertifiedMap] = useState({});
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
+  const [availableUsers, setAvailableUsers] = useState([]);
+  const [scheduling, setScheduling] = useState(false);
+  const [scheduleForm, setScheduleForm] = useState({
+    partnerId: '',
+    skill: '',
+    scheduledAt: '',
+    duration: 60,
+    totalDays: 1,
+    notes: '',
+    isTeaching: true
+  });
 
   const checkOnChainStatus = useCallback(async (sessionList) => {
     if (!contracts.registry || !sessionList || sessionList.length === 0) return;
@@ -59,7 +71,52 @@ const Sessions = () => {
 
   useEffect(() => {
     fetchSessions();
+    const interval = setInterval(fetchSessions, 4000);
+    return () => clearInterval(interval);
   }, [fetchSessions]);
+
+  const openScheduleModal = async () => {
+    try {
+      const res = await api.get('/skills/users');
+      setAvailableUsers(res.data);
+      if (res.data.length > 0) {
+        const first = res.data[0];
+        const sName = typeof first.skills?.[0] === 'string' ? first.skills[0] : first.skills?.[0]?.name;
+        setScheduleForm(prev => ({
+          ...prev,
+          partnerId: first._id,
+          skill: sName || 'Peer Skill Exchange'
+        }));
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    setShowScheduleModal(true);
+  };
+
+  const handleDirectSchedule = async (e) => {
+    e.preventDefault();
+    if (!scheduleForm.partnerId) return;
+    setScheduling(true);
+    try {
+      const partner = availableUsers.find(u => u._id === scheduleForm.partnerId);
+      await api.post('/sessions', {
+        teacherId: scheduleForm.isTeaching ? user?._id : partner?._id,
+        learnerId: scheduleForm.isTeaching ? partner?._id : user?._id,
+        skill: scheduleForm.skill || 'Peer Exchange',
+        scheduledAt: scheduleForm.scheduledAt || new Date().toISOString(),
+        duration: Number(scheduleForm.duration) || 60,
+        totalDays: Number(scheduleForm.totalDays) || 1,
+        notes: scheduleForm.notes
+      });
+      setShowScheduleModal(false);
+      fetchSessions();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setScheduling(false);
+    }
+  };
 
   const updateSessionStatus = async (id, status) => {
     try {
@@ -113,13 +170,22 @@ const Sessions = () => {
           </div>
         </div>
 
-        <Link
-          to="/verify"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-primary-500/10 text-primary-300 border border-primary-500/30 hover:bg-primary-500/20 transition-all self-start md:self-auto"
-        >
-          <ShieldCheck className="w-4 h-4 text-emerald-400" />
-          <span>Public Credential Verifier</span>
-        </Link>
+        <div className="flex flex-wrap items-center gap-2 self-start md:self-auto">
+          <button
+            onClick={openScheduleModal}
+            className="btn-primary text-xs font-semibold flex items-center gap-1.5 px-4 py-2 shadow-lg shadow-primary-500/20"
+          >
+            <Calendar className="w-4 h-4" />
+            <span>Schedule Session</span>
+          </button>
+          <Link
+            to="/verify"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-primary-500/10 text-primary-300 border border-primary-500/30 hover:bg-primary-500/20 transition-all"
+          >
+            <ShieldCheck className="w-4 h-4 text-emerald-400" />
+            <span>Public Credential Verifier</span>
+          </Link>
+        </div>
       </div>
 
       {sessions.length > 0 ? (
@@ -293,6 +359,189 @@ const Sessions = () => {
           <p className="text-sm mt-1 text-gray-500">
             Accept a skill request and schedule a meeting to begin learning or teaching.
           </p>
+        </div>
+      )}
+
+      {/* Direct Scheduling Modal */}
+      {showScheduleModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fadeIn"
+          onClick={() => setShowScheduleModal(false)}
+        >
+          <div
+            className="bg-[#1e293b] border border-slate-700/80 rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative animate-scaleUp"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-4 border-b border-slate-700/50 mb-5">
+              <div>
+                <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                  <Calendar className="w-5 h-5 text-primary-400" />
+                  Schedule Learning Session
+                </h3>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Set up a verified peer session on SkillSwap
+                </p>
+              </div>
+              <button
+                onClick={() => setShowScheduleModal(false)}
+                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleDirectSchedule} className="space-y-4">
+              <div>
+                <label className="block text-xs font-medium text-slate-300 mb-1.5">
+                  Select Peer Partner
+                </label>
+                {availableUsers.length > 0 ? (
+                  <select
+                    value={scheduleForm.partnerId}
+                    onChange={(e) => {
+                      const pid = e.target.value;
+                      const u = availableUsers.find((x) => x._id === pid);
+                      const s = typeof u?.skills?.[0] === 'string' ? u.skills[0] : u?.skills?.[0]?.name;
+                      setScheduleForm((prev) => ({
+                        ...prev,
+                        partnerId: pid,
+                        skill: s || prev.skill
+                      }));
+                    }}
+                    className="w-full bg-[#0f172a] border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-primary-500"
+                    required
+                  >
+                    {availableUsers.map((u) => (
+                      <option key={u._id} value={u._id}>
+                        {u.name} ({u.email})
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <p className="text-xs text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-xl p-3">
+                    No other users available in community yet.
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-slate-300 mb-1.5">
+                  Skill Focus
+                </label>
+                <input
+                  type="text"
+                  value={scheduleForm.skill}
+                  onChange={(e) => setScheduleForm({ ...scheduleForm, skill: e.target.value })}
+                  placeholder="e.g. Go, Smart Contracts, Solidity"
+                  className="w-full bg-[#0f172a] border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-primary-500"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setScheduleForm({ ...scheduleForm, isTeaching: true })}
+                  className={`py-2 px-3 rounded-xl border text-xs font-semibold transition-all ${
+                    scheduleForm.isTeaching
+                      ? 'bg-primary-600/20 border-primary-500 text-primary-300'
+                      : 'bg-[#0f172a] border-slate-700 text-slate-400'
+                  }`}
+                >
+                  I will Teach (Mentor)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setScheduleForm({ ...scheduleForm, isTeaching: false })}
+                  className={`py-2 px-3 rounded-xl border text-xs font-semibold transition-all ${
+                    !scheduleForm.isTeaching
+                      ? 'bg-emerald-600/20 border-emerald-500 text-emerald-300'
+                      : 'bg-[#0f172a] border-slate-700 text-slate-400'
+                  }`}
+                >
+                  I will Learn (Learner)
+                </button>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-slate-300 mb-1.5">
+                  Date & Time
+                </label>
+                <input
+                  type="datetime-local"
+                  value={scheduleForm.scheduledAt}
+                  onChange={(e) =>
+                    setScheduleForm({ ...scheduleForm, scheduledAt: e.target.value })
+                  }
+                  className="w-full bg-[#0f172a] border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-primary-500"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-slate-300 mb-1.5">
+                    Duration (mins)
+                  </label>
+                  <input
+                    type="number"
+                    min="15"
+                    step="15"
+                    value={scheduleForm.duration}
+                    onChange={(e) =>
+                      setScheduleForm({ ...scheduleForm, duration: e.target.value })
+                    }
+                    className="w-full bg-[#0f172a] border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-primary-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-slate-300 mb-1.5">
+                    Total Days
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="30"
+                    value={scheduleForm.totalDays}
+                    onChange={(e) =>
+                      setScheduleForm({ ...scheduleForm, totalDays: e.target.value })
+                    }
+                    className="w-full bg-[#0f172a] border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-primary-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-slate-300 mb-1.5">
+                  Session Notes (Optional)
+                </label>
+                <textarea
+                  value={scheduleForm.notes}
+                  onChange={(e) => setScheduleForm({ ...scheduleForm, notes: e.target.value })}
+                  placeholder="Outline topics, agenda, or learning targets..."
+                  rows={2}
+                  className="w-full bg-[#0f172a] border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-primary-500 resize-none"
+                />
+              </div>
+
+              <div className="flex gap-3 pt-3">
+                <button
+                  type="button"
+                  onClick={() => setShowScheduleModal(false)}
+                  className="btn-secondary flex-1 py-2.5 text-xs font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={scheduling || !scheduleForm.partnerId || !scheduleForm.scheduledAt}
+                  className="btn-primary flex-1 py-2.5 text-xs font-semibold flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {scheduling ? 'Scheduling...' : 'Confirm Session'}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
 

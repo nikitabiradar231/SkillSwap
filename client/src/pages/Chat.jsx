@@ -32,19 +32,50 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    socket.current = io('http://localhost:5000'); // Socket URL
+    try {
+      socket.current = io('http://localhost:5000', {
+        autoConnect: false,
+        reconnection: false
+      });
+      if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+        socket.current.connect();
+      }
+    } catch {
+      // safe fallback
+    }
 
-    socket.current.on('receive_message', (data) => {
+    socket.current?.on('receive_message', (data) => {
       // If we are currently chatting with this user, add the message
       if (selectedUser && (data.sender === selectedUser._id || data.sender === user?._id)) {
         setMessages((prev) => [...prev, data]);
       }
-      // Refresh conversation list to show latest message preview
       fetchConversations();
     });
 
-    return () => socket.current.disconnect();
+    return () => socket.current?.disconnect();
   }, [selectedUser, user]);
+
+  // Cross-browser real-time messaging polling (every 2s for active chat)
+  useEffect(() => {
+    if (!selectedUser) return;
+    const interval = setInterval(async () => {
+      try {
+        const res = await api.get(`/messages/${selectedUser._id}`);
+        setMessages(res.data);
+      } catch {
+        // silent catch
+      }
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [selectedUser]);
+
+  // Periodic refresh for conversations list (every 4s)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchConversations();
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const initChat = async () => {
@@ -82,8 +113,10 @@ const Chat = () => {
       const fetchMessages = async () => {
         const res = await api.get(`/messages/${selectedUser._id}`);
         setMessages(res.data);
-        const roomId = [user._id, selectedUser._id].sort().join('_');
-        socket.current.emit('join_room', roomId);
+        if (socket.current?.connected) {
+          const roomId = [user._id, selectedUser._id].sort().join('_');
+          socket.current.emit('join_room', roomId);
+        }
       };
       fetchMessages();
     }
@@ -100,17 +133,19 @@ const Chat = () => {
     try {
       const res = await api.post('/messages', {
         receiverId: selectedUser._id,
-        content: newMessage
+        content: newMessage.trim()
       });
 
-      const roomId = [user._id, selectedUser._id].sort().join('_');
-      socket.current.emit('send_message', {
-        roomId,
-        sender: user._id,
-        content: newMessage
-      });
+      if (socket.current?.connected) {
+        const roomId = [user._id, selectedUser._id].sort().join('_');
+        socket.current.emit('send_message', {
+          roomId,
+          sender: user._id,
+          content: newMessage.trim()
+        });
+      }
 
-      setMessages([...messages, res.data]);
+      setMessages((prev) => [...prev, res.data]);
       setNewMessage('');
       fetchConversations();
     } catch (err) {

@@ -344,7 +344,88 @@ async function handleLocalRequest(method, url, data = {}) {
 
   // 18. Messages: Conversations
   if (method === 'GET' && cleanUrl === '/messages/conversations') {
-    return { status: 200, data: [] };
+    const currentUser = getStorage(STORAGE_KEYS.CURRENT_USER, null);
+    if (!currentUser) return { status: 200, data: [] };
+    const messages = getStorage(STORAGE_KEYS.MESSAGES, []);
+    const userMessages = messages.filter(
+      (m) => m.sender === currentUser._id || m.receiver === currentUser._id
+    ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    const conversations = [];
+    const seen = new Set();
+    for (const msg of userMessages) {
+      const other = msg.sender === currentUser._id ? msg.receiver : msg.sender;
+      if (!seen.has(other)) {
+        seen.add(other);
+        conversations.push({
+          otherUserId: other,
+          lastMessage: msg.content,
+          createdAt: msg.createdAt
+        });
+      }
+    }
+    return { status: 200, data: conversations };
+  }
+
+  // 19. Messages: History
+  if (method === 'GET' && cleanUrl.startsWith('/messages/') && !cleanUrl.startsWith('/messages/conversation/')) {
+    const otherUserId = cleanUrl.replace('/messages/', '');
+    const currentUser = getStorage(STORAGE_KEYS.CURRENT_USER, null);
+    if (!currentUser || !otherUserId) return { status: 200, data: [] };
+    const messages = getStorage(STORAGE_KEYS.MESSAGES, []);
+    const history = messages.filter(
+      (m) =>
+        (m.sender === currentUser._id && m.receiver === otherUserId) ||
+        (m.sender === otherUserId && m.receiver === currentUser._id)
+    ).sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    return { status: 200, data: history };
+  }
+
+  // 20. Messages: Send
+  if (method === 'POST' && cleanUrl === '/messages') {
+    const currentUser = getStorage(STORAGE_KEYS.CURRENT_USER, null);
+    if (!currentUser) throw makeError(401, 'Not authenticated');
+    const { receiverId, content } = data;
+    if (!receiverId || !content) throw makeError(400, 'Receiver and content are required');
+    const messages = getStorage(STORAGE_KEYS.MESSAGES, []);
+    const newMsg = {
+      _id: 'msg_' + Date.now().toString(36),
+      conversationId: [currentUser._id, receiverId].sort().join('_'),
+      sender: currentUser._id,
+      receiver: receiverId,
+      content: content.trim(),
+      createdAt: new Date().toISOString()
+    };
+    messages.push(newMsg);
+    setStorage(STORAGE_KEYS.MESSAGES, messages);
+    return { status: 200, data: newMsg };
+  }
+
+  // 21. Messages: Delete Message
+  if (method === 'DELETE' && cleanUrl.startsWith('/messages/') && !cleanUrl.startsWith('/messages/conversation/')) {
+    const msgId = cleanUrl.replace('/messages/', '');
+    let messages = getStorage(STORAGE_KEYS.MESSAGES, []);
+    messages = messages.filter((m) => m._id !== msgId);
+    setStorage(STORAGE_KEYS.MESSAGES, messages);
+    return { status: 200, data: { msg: 'Message deleted' } };
+  }
+
+  // 22. Messages: Delete Conversation
+  if (method === 'DELETE' && cleanUrl.startsWith('/messages/conversation/')) {
+    const otherUserId = cleanUrl.replace('/messages/conversation/', '');
+    const currentUser = getStorage(STORAGE_KEYS.CURRENT_USER, null);
+    if (currentUser) {
+      let messages = getStorage(STORAGE_KEYS.MESSAGES, []);
+      messages = messages.filter(
+        (m) =>
+          !(
+            (m.sender === currentUser._id && m.receiver === otherUserId) ||
+            (m.sender === otherUserId && m.receiver === currentUser._id)
+          )
+      );
+      setStorage(STORAGE_KEYS.MESSAGES, messages);
+    }
+    return { status: 200, data: { msg: 'Conversation deleted' } };
   }
 
   // Fallback default

@@ -65,6 +65,10 @@ async function getDb() {
         if (!remoteDb.users || remoteDb.users.length === 0) {
           remoteDb.users = [...INITIAL_DB.users];
         } else {
+          // Purge test/demo accounts, keep only legitimate users
+          remoteDb.users = remoteDb.users.filter(
+            (u) => u.email !== 'priya.sharma@gmail.com' && u.email !== 'alex.rivers@gmail.com' && !u.email.includes('test')
+          );
           for (const initUser of INITIAL_DB.users) {
             if (!remoteDb.users.some((u) => u.email === initUser.email)) {
               remoteDb.users.push(initUser);
@@ -293,7 +297,7 @@ export default async function handler(req, res) {
 
     // 8. Skills: Marketplace Users
     if (method === 'GET' && cleanPath === '/skills/users') {
-      const filtered = db.users.filter((u) => !currentUserId || u._id !== currentUserId);
+      const filtered = db.users.filter((u) => !currentUserId || (u._id !== currentUserId && u.id !== currentUserId));
       return res.status(200).json(filtered);
     }
 
@@ -309,12 +313,19 @@ export default async function handler(req, res) {
 
     // 10. Skills Requests: Create
     if (method === 'POST' && cleanPath === '/skills/request') {
-      const requester = db.users.find((u) => u._id === currentUserId);
+      if (!currentUserId) return res.status(401).json({ msg: 'Not authenticated' });
+      const reqUser = db.users.find((u) => u._id === currentUserId || u.id === currentUserId);
       const newReq = {
-        _id: 'req_' + Date.now().toString(36),
-        requester: requester || { _id: currentUserId, name: 'Learner' },
+        _id: 'req_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6),
+        requester: reqUser
+          ? { _id: reqUser._id, name: reqUser.name, profilePic: reqUser.profilePic, walletAddress: reqUser.walletAddress }
+          : { _id: currentUserId, name: 'Learner' },
         requesterId: currentUserId,
-        ...body,
+        providerId: body.providerId,
+        skill: body.skill,
+        offeredSkill: body.offeredSkill || '',
+        requestType: body.requestType || 'exchange',
+        price: Number(body.price) || 0,
         status: 'pending',
         createdAt: new Date().toISOString()
       };
@@ -326,13 +337,19 @@ export default async function handler(req, res) {
 
     // 11. Skills Requests: Received
     if (method === 'GET' && cleanPath === '/skills/requests/received') {
-      const reqs = (db.requests || []).filter((r) => r.providerId === currentUserId);
+      if (!currentUserId) return res.status(200).json([]);
+      const reqs = (db.requests || [])
+        .filter((r) => r.providerId === currentUserId)
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       return res.status(200).json(reqs);
     }
 
     // 12. Skills Requests: Sent
     if (method === 'GET' && cleanPath === '/skills/requests/sent') {
-      const reqs = (db.requests || []).filter((r) => r.requesterId === currentUserId);
+      if (!currentUserId) return res.status(200).json([]);
+      const reqs = (db.requests || [])
+        .filter((r) => r.requesterId === currentUserId || r.requester?._id === currentUserId)
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       return res.status(200).json(reqs);
     }
 
@@ -358,20 +375,76 @@ export default async function handler(req, res) {
 
     // 15. Sessions: List
     if (method === 'GET' && cleanPath === '/sessions') {
-      const mySessions = (db.sessions || []).filter(
-        (s) => s.teacher?._id === currentUserId || s.learner?._id === currentUserId
-      );
+      const mySessions = (db.sessions || []).filter((s) => {
+        if (!currentUserId) return true;
+        const tId = s.teacher?._id || s.teacher?.id || s.teacher;
+        const lId = s.learner?._id || s.learner?.id || s.learner;
+        return tId === currentUserId || lId === currentUserId;
+      }).sort((a, b) => new Date(a.scheduledAt) - new Date(b.scheduledAt));
       return res.status(200).json(mySessions);
     }
 
-    // 16. Sessions: Create
+    // 16. Sessions: Create / Schedule
     if (method === 'POST' && cleanPath === '/sessions') {
+      const { requestId, scheduledAt, duration, totalDays, notes, meetLink, teacherId, learnerId, skill } = body;
+
+      let teacherObj = null;
+      let learnerObj = null;
+      let sessionSkill = skill || 'Peer Exchange';
+
+      if (requestId) {
+        const reqIdx = (db.requests || []).findIndex((r) => r._id === requestId);
+        if (reqIdx !== -1) {
+          db.requests[reqIdx].status = 'accepted';
+          const request = db.requests[reqIdx];
+          sessionSkill = request.skill || sessionSkill;
+
+          const provId = request.providerId || request.provider?._id || request.provider;
+          const reqId = request.requesterId || request.requester?._id || request.requester;
+
+          const tUser = db.users.find((u) => u._id === provId || u.id === provId);
+          const lUser = db.users.find((u) => u._id === reqId || u.id === reqId);
+
+          teacherObj = tUser
+            ? { _id: tUser._id, name: tUser.name, profilePic: tUser.profilePic, walletAddress: tUser.walletAddress }
+            : { _id: provId, name: 'Teacher' };
+          learnerObj = lUser
+            ? { _id: lUser._id, name: lUser.name, profilePic: lUser.profilePic, walletAddress: lUser.walletAddress }
+            : { _id: reqId, name: 'Learner' };
+        }
+      }
+
+      if (!teacherObj) {
+        const tId = teacherId || currentUserId;
+        const tUser = db.users.find((u) => u._id === tId || u.id === tId);
+        teacherObj = tUser
+          ? { _id: tUser._id, name: tUser.name, profilePic: tUser.profilePic, walletAddress: tUser.walletAddress }
+          : { _id: tId, name: 'Teacher' };
+      }
+
+      if (!learnerObj) {
+        const lId = learnerId || (currentUserId && currentUserId !== teacherObj._id ? currentUserId : null);
+        const lUser = db.users.find((u) => u._id === lId || u.id === lId);
+        learnerObj = lUser
+          ? { _id: lUser._id, name: lUser.name, profilePic: lUser.profilePic, walletAddress: lUser.walletAddress }
+          : { _id: lId || 'learner_1', name: 'Learner' };
+      }
+
       const newSession = {
-        _id: 'sess_' + Date.now().toString(36),
-        ...body,
+        _id: 'sess_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6),
+        skillRequest: requestId || null,
+        teacher: teacherObj,
+        learner: learnerObj,
+        skill: sessionSkill,
+        scheduledAt: scheduledAt || new Date().toISOString(),
+        duration: Number(duration) || 60,
+        totalDays: Number(totalDays) || 1,
+        notes: notes || '',
+        meetLink: meetLink || '',
         status: 'scheduled',
         createdAt: new Date().toISOString()
       };
+
       db.sessions = db.sessions || [];
       db.sessions.push(newSession);
       await saveDb(db);
@@ -384,6 +457,9 @@ export default async function handler(req, res) {
       const s = (db.sessions || []).find((x) => x._id === sessId);
       if (s) {
         s.status = body.status || s.status;
+        if (body.notes !== undefined) s.notes = body.notes;
+        if (body.meetLink !== undefined) s.meetLink = body.meetLink;
+        if (body.scheduledAt) s.scheduledAt = body.scheduledAt;
         await saveDb(db);
         return res.status(200).json(s);
       }
@@ -398,9 +474,90 @@ export default async function handler(req, res) {
       return res.status(200).json({ msg: 'Session deleted' });
     }
 
-    // 19. Messages: Conversations
+    // 19. Messages: List Conversations
     if (method === 'GET' && cleanPath === '/messages/conversations') {
-      return res.status(200).json([]);
+      if (!currentUserId) return res.status(200).json([]);
+      const userMessages = (db.messages || [])
+        .filter((m) => m.sender === currentUserId || m.receiver === currentUserId)
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+      const conversations = [];
+      const seen = new Set();
+      for (const msg of userMessages) {
+        const other = msg.sender === currentUserId ? msg.receiver : msg.sender;
+        if (!seen.has(other)) {
+          seen.add(other);
+          conversations.push({
+            otherUserId: other,
+            lastMessage: msg.content,
+            createdAt: msg.createdAt
+          });
+        }
+      }
+      return res.status(200).json(conversations);
+    }
+
+    // 20. Messages: Get History with specific user
+    if (method === 'GET' && cleanPath.startsWith('/messages/') && !cleanPath.startsWith('/messages/conversation/')) {
+      const otherUserId = cleanPath.replace('/messages/', '');
+      if (!currentUserId || !otherUserId) return res.status(200).json([]);
+
+      const history = (db.messages || [])
+        .filter(
+          (m) =>
+            (m.sender === currentUserId && m.receiver === otherUserId) ||
+            (m.sender === otherUserId && m.receiver === currentUserId)
+        )
+        .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+
+      return res.status(200).json(history);
+    }
+
+    // 21. Messages: Send Message
+    if (method === 'POST' && cleanPath === '/messages') {
+      if (!currentUserId) {
+        return res.status(401).json({ msg: 'Not authenticated' });
+      }
+      const { receiverId, content } = body;
+      if (!receiverId || !content) {
+        return res.status(400).json({ msg: 'Receiver and content are required' });
+      }
+
+      const newMsg = {
+        _id: 'msg_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6),
+        conversationId: [currentUserId, receiverId].sort().join('_'),
+        sender: currentUserId,
+        receiver: receiverId,
+        content: content.trim(),
+        createdAt: new Date().toISOString()
+      };
+
+      db.messages = db.messages || [];
+      db.messages.push(newMsg);
+      await saveDb(db);
+      return res.status(200).json(newMsg);
+    }
+
+    // 22. Messages: Delete Single Message
+    if (method === 'DELETE' && cleanPath.startsWith('/messages/') && !cleanPath.startsWith('/messages/conversation/')) {
+      const msgId = cleanPath.replace('/messages/', '');
+      db.messages = (db.messages || []).filter((m) => m._id !== msgId);
+      await saveDb(db);
+      return res.status(200).json({ msg: 'Message deleted' });
+    }
+
+    // 23. Messages: Delete Conversation
+    if (method === 'DELETE' && cleanPath.startsWith('/messages/conversation/')) {
+      const otherUserId = cleanPath.replace('/messages/conversation/', '');
+      db.messages = (db.messages || []).filter(
+        (m) =>
+          !(
+            (m.sender === currentUserId && m.receiver === otherUserId) ||
+            (m.sender === otherUserId && m.receiver === currentUserId)
+          )
+      );
+      await saveDb(db);
+      return res.status(200).json({ msg: 'Conversation deleted' });
     }
 
     return res.status(200).json([]);
