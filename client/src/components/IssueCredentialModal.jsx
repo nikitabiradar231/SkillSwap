@@ -160,8 +160,15 @@ const IssueCredentialModal = ({ session, onClose, onCredentialIssued }) => {
 
         {status === 'success' ? (
           <div className="text-center py-6">
-            <div className="w-16 h-16 rounded-full bg-emerald-500/20 border-2 border-emerald-500 flex items-center justify-center mx-auto mb-4 text-emerald-400">
-              <CheckCircle className="w-10 h-10" />
+            <div className="relative w-20 h-20 mx-auto mb-4">
+              <img
+                src="/credential-badge.png"
+                alt="Badge"
+                className="w-20 h-20 rounded-2xl object-cover shadow-xl border border-emerald-500/50"
+              />
+              <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center text-slate-950 shadow-md">
+                <CheckCircle className="w-4 h-4 text-slate-950" />
+              </div>
             </div>
             <h3 className="text-2xl font-bold text-white mb-2">On-Chain Credential Issued!</h3>
             <p className="text-sm text-gray-300 mb-6">

@@ -288,33 +288,43 @@ const VerifyCredential = () => {
             </div>
 
             {/* Certificate Body */}
-            <div className="py-8 text-center sm:text-left">
-              <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-primary-500/10 text-primary-300 border border-primary-500/20 mb-3">
-                {credential.category}
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">
-                {credential.skillName}
-              </h2>
-              <p className="text-gray-400 text-sm max-w-xl leading-relaxed">
-                This certifies that the learner has demonstrated practical proficiency and successfully completed peer verification under the mentorship of a verified instructor.
-              </p>
-
-              {/* Rating */}
-              <div className="flex items-center gap-1.5 mt-4 justify-center sm:justify-start">
-                <span className="text-xs text-gray-400 mr-1">Instructor Evaluation:</span>
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star
-                    key={star}
-                    className={`w-4 h-4 ${
-                      credential.rating >= star
-                        ? 'text-yellow-400 fill-yellow-400'
-                        : 'text-gray-600'
-                    }`}
-                  />
-                ))}
-                <span className="text-xs font-bold text-yellow-400 ml-1">
-                  {credential.rating} / 5
+            <div className="py-8 flex flex-col md:flex-row items-center gap-8 text-center md:text-left">
+              <div className="relative shrink-0">
+                <img
+                  src="/credential-badge.png"
+                  alt="SkillS Verified Credential Badge"
+                  className="w-28 h-28 sm:w-36 sm:h-36 rounded-2xl object-cover shadow-2xl border border-primary-500/30 group-hover:scale-105 transition-transform duration-300"
+                />
+                <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-primary-500 to-indigo-500 opacity-20 blur-lg -z-10"></div>
+              </div>
+              <div className="flex-1">
+                <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-primary-500/10 text-primary-300 border border-primary-500/20 mb-3">
+                  {credential.category}
                 </span>
+                <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">
+                  {credential.skillName}
+                </h2>
+                <p className="text-gray-400 text-sm max-w-xl leading-relaxed">
+                  This certifies that the learner has demonstrated practical proficiency and successfully completed peer verification under the mentorship of a verified instructor.
+                </p>
+
+                {/* Rating */}
+                <div className="flex items-center gap-1.5 mt-4 justify-center md:justify-start">
+                  <span className="text-xs text-gray-400 mr-1">Instructor Evaluation:</span>
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      className={`w-4 h-4 ${
+                        credential.rating >= star
+                          ? 'text-yellow-400 fill-yellow-400'
+                          : 'text-gray-600'
+                      }`}
+                    />
+                  ))}
+                  <span className="text-xs font-bold text-yellow-400 ml-1">
+                    {credential.rating} / 5
+                  </span>
+                </div>
               </div>
             </div>
 
