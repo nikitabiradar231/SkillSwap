@@ -9,8 +9,11 @@
 [![Hardhat](https://img.shields.io/badge/Smart%20Contracts-Hardhat-yellow?logo=ethereum)](https://hardhat.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-> [!NOTE]
-> **Frontend Hosting Notice**: This submission is configured for local evaluation via Vite dev server (`http://localhost:5173`). There is currently no publicly hosted cloud frontend URL; evaluation is conducted locally with MetaMask connected to either Hardhat Localhost (`31337`) or Ethereum Sepolia (`11155111`).
+> [!TIP]
+> **🚀 Live Public Web App Deployment**: The SkillSwap frontend is publicly deployed on Vercel for hackathon judges and evaluators at:  
+> **🔗 [https://client-orpin-xi-50.vercel.app](https://client-orpin-xi-50.vercel.app)**  
+> **Direct Public Verifier**: [https://client-orpin-xi-50.vercel.app/verify/1](https://client-orpin-xi-50.vercel.app/verify/1)  
+> *(Local development via `http://localhost:5173` is also fully supported for offline evaluation).*
 
 ---
 
@@ -191,11 +194,9 @@ npm run server:dev
 
 #### Track A: Live Ethereum Sepolia Demo (Pre-Deployed & Ready)
 The SkillS smart contracts are **already live and verified on Ethereum Sepolia**. Judges can evaluate the full live workflow immediately:
-1. **Launch Frontend Locally**:
-   ```bash
-   npm run client:dev
-   ```
-   Open [http://localhost:5173](http://localhost:5173).
+1. **Access the Frontend**:
+   - **Live Web App**: Open [**https://client-orpin-xi-50.vercel.app**](https://client-orpin-xi-50.vercel.app)
+   - *Or local dev*: `npm run client:dev` &rarr; [http://localhost:5173](http://localhost:5173)
 2. **Connect MetaMask to Sepolia**:
    - Network Name: `Ethereum Sepolia`
    - Chain ID: `11155111`
