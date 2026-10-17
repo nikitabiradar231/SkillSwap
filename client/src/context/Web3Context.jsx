@@ -48,28 +48,64 @@ export const Web3Provider = ({ children }) => {
     return chainId === targetChainId || chainId === 11155111 || chainId === 31337;
   }, [chainId, targetChainId]);
 
-  // Read contract addresses (support env overrides or deployedContracts.json)
+  // Read contract addresses (network-aware: strictly isolates Sepolia from Localhost)
   const contractAddresses = useMemo(() => {
-    return {
-      credentialNFT:
+    const activeChainId = chainId || targetChainId;
+    const networkDeployment =
+      deployedContracts.networks?.[activeChainId] ||
+      (deployedContracts.chainId === activeChainId ? deployedContracts : null);
+
+    if (activeChainId === 11155111) {
+      const cred =
+        import.meta.env.VITE_SEPOLIA_CREDENTIAL_NFT_ADDRESS ||
         import.meta.env.VITE_CREDENTIAL_NFT_ADDRESS ||
+        networkDeployment?.contracts?.SkillCredentialNFT?.address ||
+        '';
+      const rew =
+        import.meta.env.VITE_SEPOLIA_REWARD_TOKEN_ADDRESS ||
+        import.meta.env.VITE_REWARD_TOKEN_ADDRESS ||
+        networkDeployment?.contracts?.SkillRewardToken?.address ||
+        '';
+      const reg =
+        import.meta.env.VITE_SEPOLIA_REGISTRY_ADDRESS ||
+        import.meta.env.VITE_REGISTRY_ADDRESS ||
+        networkDeployment?.contracts?.SkillProtocolRegistry?.address ||
+        '';
+      return {
+        isConfigured: Boolean(reg),
+        credentialNFT: cred,
+        rewardToken: rew,
+        registry: reg,
+      };
+    }
+
+    // Default to Hardhat Localhost (31337)
+    return {
+      isConfigured: true,
+      credentialNFT:
+        networkDeployment?.contracts?.SkillCredentialNFT?.address ||
         deployedContracts.contracts?.SkillCredentialNFT?.address ||
         '0x5FbDB2315678afecb367f032d93F642f64180aa3',
       rewardToken:
-        import.meta.env.VITE_REWARD_TOKEN_ADDRESS ||
+        networkDeployment?.contracts?.SkillRewardToken?.address ||
         deployedContracts.contracts?.SkillRewardToken?.address ||
         '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
       registry:
-        import.meta.env.VITE_REGISTRY_ADDRESS ||
+        networkDeployment?.contracts?.SkillProtocolRegistry?.address ||
         deployedContracts.contracts?.SkillProtocolRegistry?.address ||
         '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0',
     };
-  }, []);
+  }, [chainId, targetChainId]);
 
   // Initialize read-only or signer contracts
   const initContracts = useCallback(
     async (signerOrProvider) => {
       try {
+        if (!contractAddresses.isConfigured || !contractAddresses.registry) {
+          setContracts({ credentialNFT: null, rewardToken: null, registry: null });
+          return;
+        }
+
         const credAbi = deployedContracts.contracts?.SkillCredentialNFT?.abi;
         const rewardAbi = deployedContracts.contracts?.SkillRewardToken?.abi;
         const regAbi = deployedContracts.contracts?.SkillProtocolRegistry?.abi;

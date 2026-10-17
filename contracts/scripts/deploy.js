@@ -57,7 +57,24 @@ async function main() {
   const network = await ethers.provider.getNetwork();
   const chainId = Number(network.chainId);
 
-  const deploymentData = {
+  // Read existing deployment file to preserve multi-network records
+  const clientContractsDir = path.join(__dirname, "../../client/src/contracts");
+  if (!fs.existsSync(clientContractsDir)) {
+    fs.mkdirSync(clientContractsDir, { recursive: true });
+  }
+
+  const outputPath = path.join(clientContractsDir, "deployedContracts.json");
+  let existingData = {};
+  if (fs.existsSync(outputPath)) {
+    try {
+      existingData = JSON.parse(fs.readFileSync(outputPath, "utf8"));
+    } catch {
+      existingData = {};
+    }
+  }
+
+  const networks = existingData.networks || {};
+  const currentNetworkData = {
     network: network.name,
     chainId: chainId,
     deployer: deployer.address,
@@ -78,14 +95,14 @@ async function main() {
     deployedAt: new Date().toISOString(),
   };
 
-  // Ensure client/src/contracts directory exists
-  const clientContractsDir = path.join(__dirname, "../../client/src/contracts");
-  if (!fs.existsSync(clientContractsDir)) {
-    fs.mkdirSync(clientContractsDir, { recursive: true });
-  }
+  networks[chainId] = currentNetworkData;
+
+  const deploymentData = {
+    ...currentNetworkData,
+    networks,
+  };
 
   // Save to client/src/contracts/deployedContracts.json
-  const outputPath = path.join(clientContractsDir, "deployedContracts.json");
   fs.writeFileSync(outputPath, JSON.stringify(deploymentData, null, 2));
   console.log("\n📁 Exported contract addresses and ABIs to:", outputPath);
 
@@ -95,10 +112,11 @@ async function main() {
 
   console.log("\n==================================================");
   console.log("🎉 SkillS Smart Contract Suite Deployed Successfully!");
+  console.log("Network:              ", network.name);
+  console.log("Chain ID:             ", chainId);
   console.log("SkillCredentialNFT:   ", credentialAddress);
   console.log("SkillRewardToken:     ", rewardAddress);
   console.log("SkillProtocolRegistry:", registryAddress);
-  console.log("Chain ID:             ", chainId);
   console.log("==================================================");
 }
 

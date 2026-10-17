@@ -2261,5 +2261,2272 @@
       ]
     }
   },
-  "deployedAt": "2026-10-17T04:25:54.346Z"
+  "deployedAt": "2026-10-17T06:43:30.806Z",
+  "networks": {
+    "31337": {
+      "network": "hardhat",
+      "chainId": 31337,
+      "deployer": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+      "contracts": {
+        "SkillCredentialNFT": {
+          "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+          "abi": [
+            {
+              "type": "constructor",
+              "stateMutability": "undefined",
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "defaultAdmin"
+                }
+              ]
+            },
+            {
+              "type": "error",
+              "name": "AccessControlBadConfirmation",
+              "inputs": []
+            },
+            {
+              "type": "error",
+              "name": "AccessControlUnauthorizedAccount",
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "account"
+                },
+                {
+                  "type": "bytes32",
+                  "name": "neededRole"
+                }
+              ]
+            },
+            {
+              "type": "error",
+              "name": "CredentialAlreadyRevoked",
+              "inputs": []
+            },
+            {
+              "type": "error",
+              "name": "CredentialDoesNotExist",
+              "inputs": []
+            },
+            {
+              "type": "error",
+              "name": "ERC721IncorrectOwner",
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "sender"
+                },
+                {
+                  "type": "uint256",
+                  "name": "tokenId"
+                },
+                {
+                  "type": "address",
+                  "name": "owner"
+                }
+              ]
+            },
+            {
+              "type": "error",
+              "name": "ERC721InsufficientApproval",
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "operator"
+                },
+                {
+                  "type": "uint256",
+                  "name": "tokenId"
+                }
+              ]
+            },
+            {
+              "type": "error",
+              "name": "ERC721InvalidApprover",
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "approver"
+                }
+              ]
+            },
+            {
+              "type": "error",
+              "name": "ERC721InvalidOperator",
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "operator"
+                }
+              ]
+            },
+            {
+              "type": "error",
+              "name": "ERC721InvalidOwner",
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "owner"
+                }
+              ]
+            },
+            {
+              "type": "error",
+              "name": "ERC721InvalidReceiver",
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "receiver"
+                }
+              ]
+            },
+            {
+              "type": "error",
+              "name": "ERC721InvalidSender",
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "sender"
+                }
+              ]
+            },
+            {
+              "type": "error",
+              "name": "ERC721NonexistentToken",
+              "inputs": [
+                {
+                  "type": "uint256",
+                  "name": "tokenId"
+                }
+              ]
+            },
+            {
+              "type": "error",
+              "name": "EmptyString",
+              "inputs": []
+            },
+            {
+              "type": "error",
+              "name": "InvalidAddress",
+              "inputs": []
+            },
+            {
+              "type": "error",
+              "name": "InvalidRating",
+              "inputs": []
+            },
+            {
+              "type": "error",
+              "name": "SoulboundTokenCannotBeTransferred",
+              "inputs": []
+            },
+            {
+              "type": "event",
+              "anonymous": false,
+              "name": "Approval",
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "owner",
+                  "indexed": true
+                },
+                {
+                  "type": "address",
+                  "name": "approved",
+                  "indexed": true
+                },
+                {
+                  "type": "uint256",
+                  "name": "tokenId",
+                  "indexed": true
+                }
+              ]
+            },
+            {
+              "type": "event",
+              "anonymous": false,
+              "name": "ApprovalForAll",
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "owner",
+                  "indexed": true
+                },
+                {
+                  "type": "address",
+                  "name": "operator",
+                  "indexed": true
+                },
+                {
+                  "type": "bool",
+                  "name": "approved",
+                  "indexed": false
+                }
+              ]
+            },
+            {
+              "type": "event",
+              "anonymous": false,
+              "name": "BatchMetadataUpdate",
+              "inputs": [
+                {
+                  "type": "uint256",
+                  "name": "_fromTokenId",
+                  "indexed": false
+                },
+                {
+                  "type": "uint256",
+                  "name": "_toTokenId",
+                  "indexed": false
+                }
+              ]
+            },
+            {
+              "type": "event",
+              "anonymous": false,
+              "name": "CredentialIssued",
+              "inputs": [
+                {
+                  "type": "uint256",
+                  "name": "tokenId",
+                  "indexed": true
+                },
+                {
+                  "type": "address",
+                  "name": "learner",
+                  "indexed": true
+                },
+                {
+                  "type": "address",
+                  "name": "mentor",
+                  "indexed": true
+                },
+                {
+                  "type": "string",
+                  "name": "skillName",
+                  "indexed": false
+                },
+                {
+                  "type": "string",
+                  "name": "category",
+                  "indexed": false
+                },
+                {
+                  "type": "uint8",
+                  "name": "rating",
+                  "indexed": false
+                },
+                {
+                  "type": "uint256",
+                  "name": "issueDate",
+                  "indexed": false
+                }
+              ]
+            },
+            {
+              "type": "event",
+              "anonymous": false,
+              "name": "CredentialRevoked",
+              "inputs": [
+                {
+                  "type": "uint256",
+                  "name": "tokenId",
+                  "indexed": true
+                },
+                {
+                  "type": "address",
+                  "name": "revokedBy",
+                  "indexed": true
+                },
+                {
+                  "type": "string",
+                  "name": "reason",
+                  "indexed": false
+                },
+                {
+                  "type": "uint256",
+                  "name": "timestamp",
+                  "indexed": false
+                }
+              ]
+            },
+            {
+              "type": "event",
+              "anonymous": false,
+              "name": "MetadataUpdate",
+              "inputs": [
+                {
+                  "type": "uint256",
+                  "name": "_tokenId",
+                  "indexed": false
+                }
+              ]
+            },
+            {
+              "type": "event",
+              "anonymous": false,
+              "name": "RoleAdminChanged",
+              "inputs": [
+                {
+                  "type": "bytes32",
+                  "name": "role",
+                  "indexed": true
+                },
+                {
+                  "type": "bytes32",
+                  "name": "previousAdminRole",
+                  "indexed": true
+                },
+                {
+                  "type": "bytes32",
+                  "name": "newAdminRole",
+                  "indexed": true
+                }
+              ]
+            },
+            {
+              "type": "event",
+              "anonymous": false,
+              "name": "RoleGranted",
+              "inputs": [
+                {
+                  "type": "bytes32",
+                  "name": "role",
+                  "indexed": true
+                },
+                {
+                  "type": "address",
+                  "name": "account",
+                  "indexed": true
+                },
+                {
+                  "type": "address",
+                  "name": "sender",
+                  "indexed": true
+                }
+              ]
+            },
+            {
+              "type": "event",
+              "anonymous": false,
+              "name": "RoleRevoked",
+              "inputs": [
+                {
+                  "type": "bytes32",
+                  "name": "role",
+                  "indexed": true
+                },
+                {
+                  "type": "address",
+                  "name": "account",
+                  "indexed": true
+                },
+                {
+                  "type": "address",
+                  "name": "sender",
+                  "indexed": true
+                }
+              ]
+            },
+            {
+              "type": "event",
+              "anonymous": false,
+              "name": "Transfer",
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "from",
+                  "indexed": true
+                },
+                {
+                  "type": "address",
+                  "name": "to",
+                  "indexed": true
+                },
+                {
+                  "type": "uint256",
+                  "name": "tokenId",
+                  "indexed": true
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "DEFAULT_ADMIN_ROLE",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [],
+              "outputs": [
+                {
+                  "type": "bytes32",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "MINTER_ROLE",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [],
+              "outputs": [
+                {
+                  "type": "bytes32",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "REVOKER_ROLE",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [],
+              "outputs": [
+                {
+                  "type": "bytes32",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "approve",
+              "constant": false,
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "to"
+                },
+                {
+                  "type": "uint256",
+                  "name": "tokenId"
+                }
+              ],
+              "outputs": []
+            },
+            {
+              "type": "function",
+              "name": "balanceOf",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "owner"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "uint256",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "getApproved",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "uint256",
+                  "name": "tokenId"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "address",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "getCredential",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "uint256",
+                  "name": "tokenId"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "tuple",
+                  "name": "",
+                  "components": [
+                    {
+                      "type": "uint256",
+                      "name": "id"
+                    },
+                    {
+                      "type": "address",
+                      "name": "learner"
+                    },
+                    {
+                      "type": "address",
+                      "name": "mentor"
+                    },
+                    {
+                      "type": "string",
+                      "name": "skillName"
+                    },
+                    {
+                      "type": "string",
+                      "name": "category"
+                    },
+                    {
+                      "type": "uint256",
+                      "name": "issueDate"
+                    },
+                    {
+                      "type": "uint8",
+                      "name": "rating"
+                    },
+                    {
+                      "type": "string",
+                      "name": "metadataURI"
+                    },
+                    {
+                      "type": "bool",
+                      "name": "revoked"
+                    },
+                    {
+                      "type": "string",
+                      "name": "revokeReason"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "getLearnerCredentials",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "learner"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "uint256[]",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "getRoleAdmin",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "bytes32",
+                  "name": "role"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "bytes32",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "grantRole",
+              "constant": false,
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "bytes32",
+                  "name": "role"
+                },
+                {
+                  "type": "address",
+                  "name": "account"
+                }
+              ],
+              "outputs": []
+            },
+            {
+              "type": "function",
+              "name": "hasRole",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "bytes32",
+                  "name": "role"
+                },
+                {
+                  "type": "address",
+                  "name": "account"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "bool",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "isApprovedForAll",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "owner"
+                },
+                {
+                  "type": "address",
+                  "name": "operator"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "bool",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "mintCredential",
+              "constant": false,
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "learner"
+                },
+                {
+                  "type": "address",
+                  "name": "mentor"
+                },
+                {
+                  "type": "string",
+                  "name": "skillName"
+                },
+                {
+                  "type": "string",
+                  "name": "category"
+                },
+                {
+                  "type": "uint8",
+                  "name": "rating"
+                },
+                {
+                  "type": "string",
+                  "name": "tokenUri"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "uint256",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "name",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [],
+              "outputs": [
+                {
+                  "type": "string",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "ownerOf",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "uint256",
+                  "name": "tokenId"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "address",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "renounceRole",
+              "constant": false,
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "bytes32",
+                  "name": "role"
+                },
+                {
+                  "type": "address",
+                  "name": "callerConfirmation"
+                }
+              ],
+              "outputs": []
+            },
+            {
+              "type": "function",
+              "name": "revokeCredential",
+              "constant": false,
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "uint256",
+                  "name": "tokenId"
+                },
+                {
+                  "type": "string",
+                  "name": "reason"
+                }
+              ],
+              "outputs": []
+            },
+            {
+              "type": "function",
+              "name": "revokeRole",
+              "constant": false,
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "bytes32",
+                  "name": "role"
+                },
+                {
+                  "type": "address",
+                  "name": "account"
+                }
+              ],
+              "outputs": []
+            },
+            {
+              "type": "function",
+              "name": "safeTransferFrom",
+              "constant": false,
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "from"
+                },
+                {
+                  "type": "address",
+                  "name": "to"
+                },
+                {
+                  "type": "uint256",
+                  "name": "tokenId"
+                }
+              ],
+              "outputs": []
+            },
+            {
+              "type": "function",
+              "name": "safeTransferFrom",
+              "constant": false,
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "from"
+                },
+                {
+                  "type": "address",
+                  "name": "to"
+                },
+                {
+                  "type": "uint256",
+                  "name": "tokenId"
+                },
+                {
+                  "type": "bytes",
+                  "name": "data"
+                }
+              ],
+              "outputs": []
+            },
+            {
+              "type": "function",
+              "name": "setApprovalForAll",
+              "constant": false,
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "operator"
+                },
+                {
+                  "type": "bool",
+                  "name": "approved"
+                }
+              ],
+              "outputs": []
+            },
+            {
+              "type": "function",
+              "name": "supportsInterface",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "bytes4",
+                  "name": "interfaceId"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "bool",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "symbol",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [],
+              "outputs": [
+                {
+                  "type": "string",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "tokenURI",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "uint256",
+                  "name": "tokenId"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "string",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "totalCredentials",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [],
+              "outputs": [
+                {
+                  "type": "uint256",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "transferFrom",
+              "constant": false,
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "from"
+                },
+                {
+                  "type": "address",
+                  "name": "to"
+                },
+                {
+                  "type": "uint256",
+                  "name": "tokenId"
+                }
+              ],
+              "outputs": []
+            },
+            {
+              "type": "function",
+              "name": "verifyCredential",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "uint256",
+                  "name": "tokenId"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "bool",
+                  "name": "isValid"
+                },
+                {
+                  "type": "address",
+                  "name": "learner"
+                },
+                {
+                  "type": "address",
+                  "name": "mentor"
+                },
+                {
+                  "type": "string",
+                  "name": "skillName"
+                },
+                {
+                  "type": "string",
+                  "name": "category"
+                },
+                {
+                  "type": "uint256",
+                  "name": "issueDate"
+                },
+                {
+                  "type": "uint8",
+                  "name": "rating"
+                },
+                {
+                  "type": "bool",
+                  "name": "isRevoked"
+                }
+              ]
+            }
+          ]
+        },
+        "SkillRewardToken": {
+          "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+          "abi": [
+            {
+              "type": "constructor",
+              "stateMutability": "undefined",
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "defaultAdmin"
+                }
+              ]
+            },
+            {
+              "type": "error",
+              "name": "AccessControlBadConfirmation",
+              "inputs": []
+            },
+            {
+              "type": "error",
+              "name": "AccessControlUnauthorizedAccount",
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "account"
+                },
+                {
+                  "type": "bytes32",
+                  "name": "neededRole"
+                }
+              ]
+            },
+            {
+              "type": "error",
+              "name": "ERC20InsufficientAllowance",
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "spender"
+                },
+                {
+                  "type": "uint256",
+                  "name": "allowance"
+                },
+                {
+                  "type": "uint256",
+                  "name": "needed"
+                }
+              ]
+            },
+            {
+              "type": "error",
+              "name": "ERC20InsufficientBalance",
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "sender"
+                },
+                {
+                  "type": "uint256",
+                  "name": "balance"
+                },
+                {
+                  "type": "uint256",
+                  "name": "needed"
+                }
+              ]
+            },
+            {
+              "type": "error",
+              "name": "ERC20InvalidApprover",
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "approver"
+                }
+              ]
+            },
+            {
+              "type": "error",
+              "name": "ERC20InvalidReceiver",
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "receiver"
+                }
+              ]
+            },
+            {
+              "type": "error",
+              "name": "ERC20InvalidSender",
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "sender"
+                }
+              ]
+            },
+            {
+              "type": "error",
+              "name": "ERC20InvalidSpender",
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "spender"
+                }
+              ]
+            },
+            {
+              "type": "error",
+              "name": "FaucetAmountExceeded",
+              "inputs": []
+            },
+            {
+              "type": "error",
+              "name": "FaucetCooldownActive",
+              "inputs": []
+            },
+            {
+              "type": "error",
+              "name": "InvalidAddress",
+              "inputs": []
+            },
+            {
+              "type": "error",
+              "name": "MaxSupplyExceeded",
+              "inputs": []
+            },
+            {
+              "type": "event",
+              "anonymous": false,
+              "name": "Approval",
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "owner",
+                  "indexed": true
+                },
+                {
+                  "type": "address",
+                  "name": "spender",
+                  "indexed": true
+                },
+                {
+                  "type": "uint256",
+                  "name": "value",
+                  "indexed": false
+                }
+              ]
+            },
+            {
+              "type": "event",
+              "anonymous": false,
+              "name": "FaucetDripped",
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "recipient",
+                  "indexed": true
+                },
+                {
+                  "type": "uint256",
+                  "name": "amount",
+                  "indexed": false
+                }
+              ]
+            },
+            {
+              "type": "event",
+              "anonymous": false,
+              "name": "RoleAdminChanged",
+              "inputs": [
+                {
+                  "type": "bytes32",
+                  "name": "role",
+                  "indexed": true
+                },
+                {
+                  "type": "bytes32",
+                  "name": "previousAdminRole",
+                  "indexed": true
+                },
+                {
+                  "type": "bytes32",
+                  "name": "newAdminRole",
+                  "indexed": true
+                }
+              ]
+            },
+            {
+              "type": "event",
+              "anonymous": false,
+              "name": "RoleGranted",
+              "inputs": [
+                {
+                  "type": "bytes32",
+                  "name": "role",
+                  "indexed": true
+                },
+                {
+                  "type": "address",
+                  "name": "account",
+                  "indexed": true
+                },
+                {
+                  "type": "address",
+                  "name": "sender",
+                  "indexed": true
+                }
+              ]
+            },
+            {
+              "type": "event",
+              "anonymous": false,
+              "name": "RoleRevoked",
+              "inputs": [
+                {
+                  "type": "bytes32",
+                  "name": "role",
+                  "indexed": true
+                },
+                {
+                  "type": "address",
+                  "name": "account",
+                  "indexed": true
+                },
+                {
+                  "type": "address",
+                  "name": "sender",
+                  "indexed": true
+                }
+              ]
+            },
+            {
+              "type": "event",
+              "anonymous": false,
+              "name": "TokensRewarded",
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "mentor",
+                  "indexed": true
+                },
+                {
+                  "type": "address",
+                  "name": "learner",
+                  "indexed": true
+                },
+                {
+                  "type": "uint256",
+                  "name": "mentorAmount",
+                  "indexed": false
+                },
+                {
+                  "type": "uint256",
+                  "name": "learnerAmount",
+                  "indexed": false
+                }
+              ]
+            },
+            {
+              "type": "event",
+              "anonymous": false,
+              "name": "Transfer",
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "from",
+                  "indexed": true
+                },
+                {
+                  "type": "address",
+                  "name": "to",
+                  "indexed": true
+                },
+                {
+                  "type": "uint256",
+                  "name": "value",
+                  "indexed": false
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "DEFAULT_ADMIN_ROLE",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [],
+              "outputs": [
+                {
+                  "type": "bytes32",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "FAUCET_AMOUNT",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [],
+              "outputs": [
+                {
+                  "type": "uint256",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "MAX_SUPPLY",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [],
+              "outputs": [
+                {
+                  "type": "uint256",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "MINTER_ROLE",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [],
+              "outputs": [
+                {
+                  "type": "bytes32",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "allowance",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "owner"
+                },
+                {
+                  "type": "address",
+                  "name": "spender"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "uint256",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "approve",
+              "constant": false,
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "spender"
+                },
+                {
+                  "type": "uint256",
+                  "name": "value"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "bool",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "balanceOf",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "account"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "uint256",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "burn",
+              "constant": false,
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "uint256",
+                  "name": "value"
+                }
+              ],
+              "outputs": []
+            },
+            {
+              "type": "function",
+              "name": "burnFrom",
+              "constant": false,
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "account"
+                },
+                {
+                  "type": "uint256",
+                  "name": "value"
+                }
+              ],
+              "outputs": []
+            },
+            {
+              "type": "function",
+              "name": "decimals",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [],
+              "outputs": [
+                {
+                  "type": "uint8",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "getRoleAdmin",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "bytes32",
+                  "name": "role"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "bytes32",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "grantRole",
+              "constant": false,
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "bytes32",
+                  "name": "role"
+                },
+                {
+                  "type": "address",
+                  "name": "account"
+                }
+              ],
+              "outputs": []
+            },
+            {
+              "type": "function",
+              "name": "hasRole",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "bytes32",
+                  "name": "role"
+                },
+                {
+                  "type": "address",
+                  "name": "account"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "bool",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "lastFaucetRequest",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": ""
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "uint256",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "mint",
+              "constant": false,
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "to"
+                },
+                {
+                  "type": "uint256",
+                  "name": "amount"
+                }
+              ],
+              "outputs": []
+            },
+            {
+              "type": "function",
+              "name": "name",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [],
+              "outputs": [
+                {
+                  "type": "string",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "renounceRole",
+              "constant": false,
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "bytes32",
+                  "name": "role"
+                },
+                {
+                  "type": "address",
+                  "name": "callerConfirmation"
+                }
+              ],
+              "outputs": []
+            },
+            {
+              "type": "function",
+              "name": "requestFaucet",
+              "constant": false,
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "recipient"
+                }
+              ],
+              "outputs": []
+            },
+            {
+              "type": "function",
+              "name": "revokeRole",
+              "constant": false,
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "bytes32",
+                  "name": "role"
+                },
+                {
+                  "type": "address",
+                  "name": "account"
+                }
+              ],
+              "outputs": []
+            },
+            {
+              "type": "function",
+              "name": "rewardParticipation",
+              "constant": false,
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "mentor"
+                },
+                {
+                  "type": "address",
+                  "name": "learner"
+                },
+                {
+                  "type": "uint256",
+                  "name": "mentorAmount"
+                },
+                {
+                  "type": "uint256",
+                  "name": "learnerAmount"
+                }
+              ],
+              "outputs": []
+            },
+            {
+              "type": "function",
+              "name": "supportsInterface",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "bytes4",
+                  "name": "interfaceId"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "bool",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "symbol",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [],
+              "outputs": [
+                {
+                  "type": "string",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "totalSupply",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [],
+              "outputs": [
+                {
+                  "type": "uint256",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "transfer",
+              "constant": false,
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "to"
+                },
+                {
+                  "type": "uint256",
+                  "name": "value"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "bool",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "transferFrom",
+              "constant": false,
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "from"
+                },
+                {
+                  "type": "address",
+                  "name": "to"
+                },
+                {
+                  "type": "uint256",
+                  "name": "value"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "bool",
+                  "name": ""
+                }
+              ]
+            }
+          ]
+        },
+        "SkillProtocolRegistry": {
+          "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+          "abi": [
+            {
+              "type": "constructor",
+              "stateMutability": "undefined",
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "_credentialNFT"
+                },
+                {
+                  "type": "address",
+                  "name": "_rewardToken"
+                },
+                {
+                  "type": "address",
+                  "name": "_initialOwner"
+                }
+              ]
+            },
+            {
+              "type": "error",
+              "name": "EmptyString",
+              "inputs": []
+            },
+            {
+              "type": "error",
+              "name": "EnforcedPause",
+              "inputs": []
+            },
+            {
+              "type": "error",
+              "name": "ExpectedPause",
+              "inputs": []
+            },
+            {
+              "type": "error",
+              "name": "InvalidAddress",
+              "inputs": []
+            },
+            {
+              "type": "error",
+              "name": "InvalidRating",
+              "inputs": []
+            },
+            {
+              "type": "error",
+              "name": "MentorAlreadyRegistered",
+              "inputs": []
+            },
+            {
+              "type": "error",
+              "name": "MentorNotRegistered",
+              "inputs": []
+            },
+            {
+              "type": "error",
+              "name": "OwnableInvalidOwner",
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "owner"
+                }
+              ]
+            },
+            {
+              "type": "error",
+              "name": "OwnableUnauthorizedAccount",
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "account"
+                }
+              ]
+            },
+            {
+              "type": "error",
+              "name": "ReentrancyGuardReentrantCall",
+              "inputs": []
+            },
+            {
+              "type": "error",
+              "name": "SelfCertificationNotAllowed",
+              "inputs": []
+            },
+            {
+              "type": "error",
+              "name": "SessionAlreadyCertified",
+              "inputs": []
+            },
+            {
+              "type": "event",
+              "anonymous": false,
+              "name": "MentorRegistered",
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "mentor",
+                  "indexed": true
+                },
+                {
+                  "type": "string",
+                  "name": "name",
+                  "indexed": false
+                },
+                {
+                  "type": "uint256",
+                  "name": "timestamp",
+                  "indexed": false
+                }
+              ]
+            },
+            {
+              "type": "event",
+              "anonymous": false,
+              "name": "OwnershipTransferred",
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "previousOwner",
+                  "indexed": true
+                },
+                {
+                  "type": "address",
+                  "name": "newOwner",
+                  "indexed": true
+                }
+              ]
+            },
+            {
+              "type": "event",
+              "anonymous": false,
+              "name": "Paused",
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "account",
+                  "indexed": false
+                }
+              ]
+            },
+            {
+              "type": "event",
+              "anonymous": false,
+              "name": "RewardsUpdated",
+              "inputs": [
+                {
+                  "type": "uint256",
+                  "name": "newMentorReward",
+                  "indexed": false
+                },
+                {
+                  "type": "uint256",
+                  "name": "newLearnerReward",
+                  "indexed": false
+                }
+              ]
+            },
+            {
+              "type": "event",
+              "anonymous": false,
+              "name": "SessionCertified",
+              "inputs": [
+                {
+                  "type": "bytes32",
+                  "name": "sessionIdHash",
+                  "indexed": true
+                },
+                {
+                  "type": "uint256",
+                  "name": "tokenId",
+                  "indexed": true
+                },
+                {
+                  "type": "address",
+                  "name": "mentor",
+                  "indexed": true
+                },
+                {
+                  "type": "address",
+                  "name": "learner",
+                  "indexed": false
+                },
+                {
+                  "type": "string",
+                  "name": "skillName",
+                  "indexed": false
+                }
+              ]
+            },
+            {
+              "type": "event",
+              "anonymous": false,
+              "name": "Unpaused",
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "account",
+                  "indexed": false
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "certifiedSessions",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "bytes32",
+                  "name": ""
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "bool",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "completeAndCertifySession",
+              "constant": false,
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "learner"
+                },
+                {
+                  "type": "string",
+                  "name": "skillName"
+                },
+                {
+                  "type": "string",
+                  "name": "category"
+                },
+                {
+                  "type": "uint8",
+                  "name": "rating"
+                },
+                {
+                  "type": "string",
+                  "name": "metadataURI"
+                },
+                {
+                  "type": "string",
+                  "name": "sessionId"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "uint256",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "credentialNFT",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [],
+              "outputs": [
+                {
+                  "type": "address",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "getMentorCount",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [],
+              "outputs": [
+                {
+                  "type": "uint256",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "getMentorStats",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "mentor"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "string",
+                  "name": "name"
+                },
+                {
+                  "type": "string",
+                  "name": "bio"
+                },
+                {
+                  "type": "uint256",
+                  "name": "totalSessions"
+                },
+                {
+                  "type": "uint256",
+                  "name": "avgRatingScaled"
+                },
+                {
+                  "type": "bool",
+                  "name": "isRegistered"
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "isSessionCertified",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "string",
+                  "name": "sessionId"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "bool",
+                  "name": ""
+                },
+                {
+                  "type": "uint256",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "learnerRewardAmount",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [],
+              "outputs": [
+                {
+                  "type": "uint256",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "mentorRewardAmount",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [],
+              "outputs": [
+                {
+                  "type": "uint256",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "mentors",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": ""
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "string",
+                  "name": "name"
+                },
+                {
+                  "type": "string",
+                  "name": "bio"
+                },
+                {
+                  "type": "uint256",
+                  "name": "registeredAt"
+                },
+                {
+                  "type": "uint256",
+                  "name": "totalSessionsCertified"
+                },
+                {
+                  "type": "uint256",
+                  "name": "totalScoreSum"
+                },
+                {
+                  "type": "bool",
+                  "name": "isRegistered"
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "owner",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [],
+              "outputs": [
+                {
+                  "type": "address",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "pause",
+              "constant": false,
+              "payable": false,
+              "inputs": [],
+              "outputs": []
+            },
+            {
+              "type": "function",
+              "name": "paused",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [],
+              "outputs": [
+                {
+                  "type": "bool",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "registerMentor",
+              "constant": false,
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "string",
+                  "name": "name"
+                },
+                {
+                  "type": "string",
+                  "name": "bio"
+                }
+              ],
+              "outputs": []
+            },
+            {
+              "type": "function",
+              "name": "registeredMentorList",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "uint256",
+                  "name": ""
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "address",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "renounceOwnership",
+              "constant": false,
+              "payable": false,
+              "inputs": [],
+              "outputs": []
+            },
+            {
+              "type": "function",
+              "name": "rewardToken",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [],
+              "outputs": [
+                {
+                  "type": "address",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "sessionToTokenId",
+              "constant": true,
+              "stateMutability": "view",
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "bytes32",
+                  "name": ""
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "uint256",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "setRewardAmounts",
+              "constant": false,
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "uint256",
+                  "name": "newMentorReward"
+                },
+                {
+                  "type": "uint256",
+                  "name": "newLearnerReward"
+                }
+              ],
+              "outputs": []
+            },
+            {
+              "type": "function",
+              "name": "transferOwnership",
+              "constant": false,
+              "payable": false,
+              "inputs": [
+                {
+                  "type": "address",
+                  "name": "newOwner"
+                }
+              ],
+              "outputs": []
+            },
+            {
+              "type": "function",
+              "name": "unpause",
+              "constant": false,
+              "payable": false,
+              "inputs": [],
+              "outputs": []
+            }
+          ]
+        }
+      },
+      "deployedAt": "2026-10-17T06:43:30.806Z"
+    }
+  }
 }

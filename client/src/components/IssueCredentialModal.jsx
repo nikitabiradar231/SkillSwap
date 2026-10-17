@@ -5,7 +5,7 @@ import { ethers } from 'ethers';
 import { Link } from 'react-router-dom';
 
 const IssueCredentialModal = ({ session, onClose, onCredentialIssued }) => {
-  const { account, contracts, getExplorerUrl, refreshBalance, connectWallet, isCorrectNetwork, switchNetwork } =
+  const { account, chainId, contracts, contractAddresses, getExplorerUrl, refreshBalance, connectWallet, isCorrectNetwork, switchNetwork } =
     useContext(Web3Context);
 
   const learnerWalletDefault = session.learner?.walletAddress || '';
@@ -55,7 +55,11 @@ const IssueCredentialModal = ({ session, onClose, onCredentialIssued }) => {
     }
 
     if (!contracts.registry) {
-      setErrorMessage('Smart contracts not initialized. Check your network connection.');
+      if (chainId === 11155111 && !contractAddresses?.isConfigured) {
+        setErrorMessage('Sepolia contracts not yet deployed. Please deploy to Sepolia or switch your wallet network to Hardhat Localhost (Chain ID 31337).');
+      } else {
+        setErrorMessage('Smart contracts not initialized. Check your network connection.');
+      }
       return;
     }
 
