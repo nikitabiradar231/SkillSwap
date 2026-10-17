@@ -189,7 +189,35 @@ npm run server:dev
 
 ### Step-by-Step Live Demo Execution
 
-#### Track A: Localhost Hardhat Demo (Fully Autonomous & Immediate)
+#### Track A: Live Ethereum Sepolia Demo (Pre-Deployed & Ready)
+The SkillS smart contracts are **already live and verified on Ethereum Sepolia**. Judges can evaluate the full live workflow immediately:
+1. **Launch Frontend Locally**:
+   ```bash
+   npm run client:dev
+   ```
+   Open [http://localhost:5173](http://localhost:5173).
+2. **Connect MetaMask to Sepolia**:
+   - Network Name: `Ethereum Sepolia`
+   - Chain ID: `11155111`
+   - RPC URL: `https://ethereum-sepolia-rpc.publicnode.com`
+   - Block Explorer: [https://sepolia.etherscan.io](https://sepolia.etherscan.io)
+3. **Claim Testnet SKILL Tokens**:
+   - Click **"Connect Wallet"** in the top navigation bar.
+   - Click the **"Faucet"** button in the Web3 status badge.
+   - Confirm transaction in MetaMask: your balance increases by **+100 SKILL**.
+   - Click again to verify 24-hour anti-spam cooldown protection.
+4. **Issue & Certify a Peer Credential**:
+   - Navigate to `/sessions`.
+   - Click **"Certify on Chain"** on a completed session (or trigger from session modal).
+   - Enter learner wallet address, skill title (e.g. *Full-Stack Web3 Architecture*), rating (1–5 stars), and notes.
+   - Click **"Issue Credential NFT"** and sign the transaction in MetaMask.
+   - The contract mints the non-transferable Soulbound credential and distributes **+50 SKILL** (Mentor) and **+25 SKILL** (Learner).
+5. **Direct Public Zero-Trust Verification**:
+   - Open `/verify/1` or enter the learner's wallet address (`0xb4138eA2f3EA98F756DeAb619B13D41c1F7230E3`).
+   - View the live on-chain certificate, verification badge, instructor rating, and immutable timestamps directly from Ethereum Sepolia.
+
+#### Track B: Localhost Hardhat Demo (Fully Autonomous Offline)
+If evaluating completely offline or without testnet ETH:
 1. **Start Local Hardhat Node**:
    ```bash
    npm run contracts:node
@@ -202,29 +230,23 @@ npm run server:dev
    ```bash
    npm run client:dev
    ```
-   Open `http://localhost:5173`.
+   Open [http://localhost:5173](http://localhost:5173).
 4. **Connect MetaMask**:
    - Add network: RPC URL `http://127.0.0.1:8545`, Chain ID `31337`, Symbol `ETH`.
-   - Import Hardhat Account #0 (`0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266`) or any test private key.
-5. **Claim SKILL Faucet Tokens**:
-   - In the header Web3 status pill, click the **"Faucet"** button.
-   - Confirm transaction in MetaMask: your balance increases by **+100 SKILL**.
-   - Click it again: notice the 24-hour rate limit prevents spamming.
-6. **Issue & Certify a Credential**:
-   - Navigate to `/sessions`.
-   - Click **"Certify on Chain"** on a completed session.
-   - Enter a test recipient wallet address (e.g. Account #1 `0x70997970C51812dc3A010C7d01b50e0d17dc79C8`), skill name, category, and 5-star rating.
-   - Click **"Issue Credential NFT"** and confirm the transaction in MetaMask.
-   - The contract completes the session, mints the Soulbound token, and credits the rewards!
-7. **Verify Cryptographic Proof**:
-   - Navigate to `/verify/1`.
-   - Notice the on-chain badge, verified indicator, instructor rating, and non-transferability verification.
+   - Import Hardhat Account #0 (`0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266`).
+5. Perform Faucet, Certification, and Verification steps with instant local block mining.
 
-#### Track B: Sepolia Testnet Demo (Once Environment Configured)
-1. Add `SEPOLIA_RPC_URL` and `PRIVATE_KEY` to `contracts/.env`.
-2. Run `npm run contracts:deploy:sepolia`.
-3. Switch MetaMask network to **Ethereum Sepolia** (`11155111`).
-4. Perform steps 5–7 above; all links open live transactions on [Sepolia Etherscan](https://sepolia.etherscan.io).
+---
+
+### ⏱️ Concise 3–5 Minute Judge Demonstration Script
+
+| Timestamp | Phase | What to Show & Say | Key On-Screen Actions |
+|---|---|---|---|
+| **0:00 – 1:00** | **The Problem & Platform Overview** | *"Traditional certificates suffer from resume fraud and centralized database vulnerabilities. SkillS transforms peer learning into cryptographic proof: peers learn via WebRTC video, and mentors certify mastery on-chain using non-transferable Soulbound NFTs and community SKILL reward tokens."* | Open `http://localhost:5173`. Highlight decentralized hero section, architecture, and feature tracks. |
+| **1:00 – 2:00** | **Web3 Identity & SKILL Faucet** | *"SkillS integrates non-custodial wallets seamlessly. Notice our network badge detecting Ethereum Sepolia. With one click on the built-in Faucet, users claim 100 SKILL tokens. If a user immediately tries to claim again, the smart contract's 24-hour rate limit reverts the transaction to prevent abuse."* | Click **Connect Wallet** &rarr; Select Sepolia. Click **Faucet** &rarr; Confirm in MetaMask (+100 SKILL). Click again to demonstrate cooldown guard. |
+| **2:00 – 3:15** | **Session Certification & Soulbound Minting** | *"Once a peer learning session concludes, the mentor certifies completion on-chain. The orchestrator registry checks session uniqueness, blocks self-certification, mints a permanent Soulbound NFT to the learner, and automatically rewards both mentor (+50 SKILL) and learner (+25 SKILL)."* | Navigate to `/sessions` &rarr; Click **Certify on Chain**. Set rating to 5 stars &rarr; Click **Issue Credential NFT**. View transaction hash link to Sepolia Etherscan. |
+| **3:15 – 4:15** | **Zero-Trust Public Verification Portal** | *"Any recruiter, judge, or university can verify credentials with zero authentication and zero trust in our backend. Notice `/verify/1`: the badge confirms cryptographic validity, recipient learner address, mentor address, evaluation rating, and Soulbound non-transferability directly from Ethereum storage."* | Navigate to `/verify/1` or search learner address `0xb4138eA2f3EA98F756DeAb619B13D41c1F7230E3`. Show green **Cryptographically Verified** badge and badge art. |
+| **4:15 – 5:00** | **Contract Security & Architecture Summary** | *"All contracts use Solidity 0.8.24 with OpenZeppelin v5. The credential NFT strictly blocks transfer attempts with `SoulboundTokenCannotBeTransferred`, while only the registry contract holds `MINTER_ROLE`. All 11 unit tests and 7/7 end-to-end workflow verification steps pass."* | Point to Etherscan contract links, test suites (`npm run contracts:test`), and clean production build. |
 
 ---
 

@@ -255,8 +255,13 @@ export const Web3Provider = ({ children }) => {
             const signer = await provider.getSigner();
             initContracts(signer);
           } else {
-            // Setup read-only provider for public credential checking
-            initContracts(provider);
+            // Setup robust read-only provider for public credential checking
+            const isSepolia = (deployedContracts.chainId || 11155111) === 11155111;
+            const rpcUrl = isSepolia
+              ? (import.meta.env.VITE_SEPOLIA_RPC_URL || 'https://ethereum-sepolia-rpc.publicnode.com')
+              : 'http://127.0.0.1:8545';
+            const publicProvider = new ethers.JsonRpcProvider(rpcUrl);
+            initContracts(publicProvider);
           }
         })
         .catch(console.error);

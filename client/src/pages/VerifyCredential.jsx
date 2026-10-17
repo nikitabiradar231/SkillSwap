@@ -22,7 +22,8 @@ import deployedContracts from '../contracts/deployedContracts.json';
 const VerifyCredential = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { contracts, getExplorerUrl, contractAddresses, chainId } = useContext(Web3Context);
+  const { contracts, getExplorerUrl, contractAddresses, chainId, isCorrectNetwork, account } =
+    useContext(Web3Context);
 
   const [searchQuery, setSearchQuery] = useState(id || '');
   const [loading, setLoading] = useState(false);
@@ -31,16 +32,12 @@ const VerifyCredential = () => {
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
 
-  // Fallback read-only provider for visitors without MetaMask
+  // Fallback read-only provider for visitors without MetaMask or on wrong network
   const getReadOnlyNFTContract = useCallback(() => {
-    if (contracts.credentialNFT) return contracts.credentialNFT;
+    if (contracts.credentialNFT && (!account || isCorrectNetwork)) return contracts.credentialNFT;
     try {
-      const isSepolia =
-        chainId === 11155111 ||
-        Boolean(
-          import.meta.env.VITE_SEPOLIA_CREDENTIAL_NFT_ADDRESS ||
-          deployedContracts.networks?.[11155111]?.contracts?.SkillCredentialNFT?.address
-        );
+      const activeChain = chainId || (deployedContracts.chainId || 11155111);
+      const isSepolia = activeChain === 11155111;
 
       const rpcUrl = isSepolia
         ? (import.meta.env.VITE_SEPOLIA_RPC_URL || 'https://ethereum-sepolia-rpc.publicnode.com')
@@ -49,8 +46,10 @@ const VerifyCredential = () => {
       const provider = new ethers.JsonRpcProvider(rpcUrl);
       const abi = deployedContracts.contracts?.SkillCredentialNFT?.abi;
       let address = contractAddresses.credentialNFT;
-      if (!address && !isSepolia) {
-        address = deployedContracts.contracts?.SkillCredentialNFT?.address;
+      if (!address) {
+        address = isSepolia
+          ? deployedContracts.networks?.[11155111]?.contracts?.SkillCredentialNFT?.address
+          : (deployedContracts.networks?.[31337]?.contracts?.SkillCredentialNFT?.address || deployedContracts.contracts?.SkillCredentialNFT?.address);
       }
       if (!abi || !address) return null;
       return new ethers.Contract(address, abi, provider);
@@ -58,10 +57,10 @@ const VerifyCredential = () => {
       console.error('Error creating fallback read-only provider:', err);
       return null;
     }
-  }, [contracts.credentialNFT, contractAddresses.credentialNFT, chainId]);
+  }, [contracts.credentialNFT, isCorrectNetwork, account, contractAddresses.credentialNFT, chainId]);
 
   const verifyById = useCallback(
-    async (tokenIdStr) => {
+    async (tokenIdStr, keepTokens = false) => {
       const tokenId = parseInt(tokenIdStr, 10);
       if (isNaN(tokenId) || tokenId <= 0) {
         setError('Please enter a valid numeric Credential Token ID.');
@@ -71,7 +70,9 @@ const VerifyCredential = () => {
 
       setLoading(true);
       setError('');
-      setLearnerTokens([]);
+      if (!keepTokens) {
+        setLearnerTokens([]);
+      }
 
       try {
         if (chainId === 11155111 && !contractAddresses.isConfigured) {
@@ -164,8 +165,8 @@ const VerifyCredential = () => {
         } else {
           const ids = tokenIds.map((t) => t.toString());
           setLearnerTokens(ids);
-          // Auto-load the first token
-          verifyById(ids[0]);
+          // Auto-load the first token without clearing learnerTokens
+          await verifyById(ids[0], true);
         }
       } catch (err) {
         console.error('Learner query error:', err);
@@ -182,10 +183,13 @@ const VerifyCredential = () => {
     const query = searchQuery.trim();
     if (!query) return;
 
-    if (ethers.isAddress(query)) {
-      verifyByLearner(query);
+    if (id === query) {
+      if (ethers.isAddress(query)) {
+        verifyByLearner(query);
+      } else {
+        verifyById(query);
+      }
     } else {
-      verifyById(query);
       navigate(`/verify/${query}`);
     }
   };
@@ -193,9 +197,13 @@ const VerifyCredential = () => {
   useEffect(() => {
     if (id) {
       setSearchQuery(id);
-      verifyById(id);
+      if (ethers.isAddress(id)) {
+        verifyByLearner(id);
+      } else {
+        verifyById(id);
+      }
     }
-  }, [id, verifyById]);
+  }, [id, verifyById, verifyByLearner]);
 
   const copyShareLink = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -249,7 +257,7 @@ const VerifyCredential = () => {
             {learnerTokens.map((tId) => (
               <button
                 key={tId}
-                onClick={() => verifyById(tId)}
+                onClick={() => verifyById(tId, true)}
                 className={`px-3 py-1 rounded-lg text-xs font-mono border transition-all ${
                   credential?.id === parseInt(tId, 10)
                     ? 'bg-primary-600 border-primary-500 text-white'
