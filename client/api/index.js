@@ -93,7 +93,8 @@ async function saveDb(db) {
   try {
     await put(DB_BLOB_PATH, JSON.stringify(db, null, 2), {
       access: 'public',
-      addRandomSuffix: false
+      addRandomSuffix: false,
+      allowOverwrite: true
     });
   } catch (err) {
     console.error('Blob save notice:', err.message);
