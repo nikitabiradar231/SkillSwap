@@ -35,9 +35,15 @@ const VerifyCredential = () => {
   const getReadOnlyNFTContract = useCallback(() => {
     if (contracts.credentialNFT) return contracts.credentialNFT;
     try {
-      const rpcUrl =
-        import.meta.env.VITE_SEPOLIA_RPC_URL ||
-        'https://ethereum-sepolia-rpc.publicnode.com';
+      const isSepolia = Boolean(
+        import.meta.env.VITE_SEPOLIA_CREDENTIAL_NFT_ADDRESS ||
+        deployedContracts.networks?.[11155111]?.contracts?.SkillCredentialNFT?.address
+      );
+
+      const rpcUrl = isSepolia
+        ? (import.meta.env.VITE_SEPOLIA_RPC_URL || 'https://ethereum-sepolia-rpc.publicnode.com')
+        : 'http://127.0.0.1:8545';
+
       const provider = new ethers.JsonRpcProvider(rpcUrl);
       const abi = deployedContracts.contracts?.SkillCredentialNFT?.abi;
       const address =
