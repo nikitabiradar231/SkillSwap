@@ -69,7 +69,7 @@ async function main() {
 
   // 3. Test Session Certification Workflow
   console.log("\n3. Testing Session Certification & Credential Issuance...");
-  const sessionId = "hackathon-demo-session-42";
+  const sessionId = "session-e2e-verification-42";
   const skillName = "Full-Stack Web3 Architecture";
   const category = "Blockchain & Web3";
   const rating = 5;

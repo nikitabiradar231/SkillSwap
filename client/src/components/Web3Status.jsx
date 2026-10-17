@@ -59,7 +59,7 @@ const Web3Status = () => {
       {/* Testnet Badge */}
       <span className="hidden lg:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-primary-500/10 text-primary-300 border border-primary-500/20">
         <span className="w-1.5 h-1.5 rounded-full bg-primary-400 animate-pulse"></span>
-        Ethereum Testnet
+        Ethereum Sepolia
       </span>
 
       {/* Network Indicator / Switcher */}
@@ -93,7 +93,7 @@ const Web3Status = () => {
             onClick={handleClaimFaucet}
             disabled={faucetLoading}
             className="text-[10px] bg-primary-600/30 hover:bg-primary-600/50 text-primary-300 px-2 py-0.5 rounded-md border border-primary-500/30 transition-all flex items-center gap-1 disabled:opacity-50"
-            title="Claim 100 SKILL test tokens"
+            title="Claim 100 SKILL tokens from community faucet"
           >
             {faucetLoading ? (
               <RefreshCw className="w-3 h-3 animate-spin" />

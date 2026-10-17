@@ -172,11 +172,11 @@ const Profile = () => {
 
             <div className="flex-1 pt-2">
               <h1 className="text-3xl font-medium text-slate-100">{formData.name || 'Your Name'}</h1>
-              <p className="text-sm text-slate-500 mt-1.5 font-medium">Pune, Maharashtra</p>
+              <p className="text-sm text-slate-500 mt-1.5 font-medium">{user?.email || 'SkillS Member'}</p>
               <div className="mt-5 flex items-start gap-3">
                 <span className="text-sm text-slate-300 whitespace-nowrap">bio —</span>
                 <p className="text-sm text-slate-400 leading-relaxed max-w-xl">
-                  {formData.bio || 'add a short bio here to let learners know who you are and what you teach best.'}
+                  {formData.bio || 'No bio provided yet.'}
                 </p>
               </div>
             </div>

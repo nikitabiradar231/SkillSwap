@@ -125,7 +125,7 @@ const IssueCredentialModal = ({ session, onClose, onCredentialIssued }) => {
         }
       }
 
-      setMintedTokenId(issuedTokenId || '1');
+      setMintedTokenId(issuedTokenId || null);
       setStatus('success');
       await refreshBalance(account);
 
@@ -178,7 +178,9 @@ const IssueCredentialModal = ({ session, onClose, onCredentialIssued }) => {
             <div className="bg-slate-800/80 border border-slate-700 rounded-xl p-4 mb-6 text-left space-y-2 text-xs">
               <div className="flex justify-between items-center">
                 <span className="text-gray-400">Credential Token ID:</span>
-                <span className="font-mono text-primary-400 font-bold text-sm">#{mintedTokenId}</span>
+                <span className="font-mono text-primary-400 font-bold text-sm">
+                  {mintedTokenId ? `#${mintedTokenId}` : 'Confirmed on-chain'}
+                </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-400">Recipient (Learner):</span>
@@ -213,7 +215,7 @@ const IssueCredentialModal = ({ session, onClose, onCredentialIssued }) => {
 
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
-                to={`/verify/${mintedTokenId}`}
+                to={mintedTokenId ? `/verify/${mintedTokenId}` : '/verify'}
                 className="btn-primary py-2.5 px-4 text-sm flex-1 flex items-center justify-center gap-2"
                 onClick={onClose}
               >

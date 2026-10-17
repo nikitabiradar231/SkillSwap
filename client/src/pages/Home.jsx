@@ -29,7 +29,7 @@ const Home = () => {
           {/* Pill Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-300 text-xs font-semibold mb-8 shadow-inner animate-fade-in">
             <Sparkles className="w-4 h-4 text-yellow-400" />
-            <span>Built on Ethereum Sepolia Testnet &bull; Soulbound Skill Credentials</span>
+            <span>Built on Ethereum Sepolia &bull; Soulbound Skill Credentials</span>
           </div>
 
           {/* Headline */}
@@ -69,7 +69,7 @@ const Home = () => {
                 onClick={connectWallet}
                 className="text-xs text-primary-400 hover:text-primary-300 underline underline-offset-4 transition-colors"
               >
-                Or connect MetaMask to view your testnet badges &amp; SKILL balance &rarr;
+                Or connect MetaMask to view your credentials &amp; SKILL balance &rarr;
               </button>
             </div>
           )}
@@ -109,35 +109,35 @@ const Home = () => {
               </div>
               <h3 className="text-xl font-bold text-white mb-2">3. SKILL Reward Tokens</h3>
               <p className="text-gray-400 text-sm leading-relaxed">
-                Earn ERC-20 SKILL community tokens whenever you mentor peers or complete courses. Built-in testnet faucet lets users and judges test reward mechanics effortlessly.
+                Earn ERC-20 SKILL community tokens whenever you mentor peers or complete courses. Built-in testnet faucet allows participants to test reward mechanics effortlessly.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Live Verifier Demo Banner for Judges */}
+      {/* Public On-Chain Verifier Section */}
       <section className="py-16">
         <div className="max-w-4xl mx-auto px-4">
           <div className="bg-gradient-to-r from-slate-900 via-primary-950/20 to-slate-900 border border-primary-500/30 rounded-3xl p-8 sm:p-10 shadow-2xl relative overflow-hidden">
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               <div>
                 <span className="text-[11px] font-bold uppercase tracking-wider text-primary-400 bg-primary-500/10 px-3 py-1 rounded-full border border-primary-500/20 mb-3 inline-block">
-                  Hackathon Judge Verification Flow
+                  Decentralized Verification
                 </span>
                 <h3 className="text-2xl font-bold text-white mb-2">
-                  Test the On-Chain Verification
+                  Verify Credentials On-Chain
                 </h3>
                 <p className="text-sm text-gray-400 max-w-lg">
-                  Every certified skill is permanently written to the smart contract. You can inspect Token ID #1 or any issued credential directly from the blockchain.
+                  Every certified skill is permanently recorded on Ethereum smart contracts. Instantly inspect credentials by Token ID or wallet address with zero trust required.
                 </p>
               </div>
               <Link
-                to="/verify/1"
+                to="/verify"
                 className="btn-primary py-3 px-6 text-sm whitespace-nowrap shadow-lg shadow-primary-500/20 flex items-center gap-2"
               >
                 <ShieldCheck className="w-4 h-4" />
-                <span>Verify Token #1</span>
+                <span>Launch Verifier</span>
               </Link>
             </div>
           </div>
@@ -154,7 +154,7 @@ const Home = () => {
             <span className="text-lg font-bold text-white">SkillS</span>
           </div>
           <p className="text-xs text-gray-500">
-            Decentralized Peer-to-Peer Learning &bull; Ethereum Smart Contracts &bull; 2026 Hackathon Edition
+            Decentralized Peer-to-Peer Learning &bull; Ethereum Smart Contracts
           </p>
         </div>
       </footer>

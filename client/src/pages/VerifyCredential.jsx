@@ -231,7 +231,7 @@ const VerifyCredential = () => {
         <div className="relative flex items-center">
           <input
             type="text"
-            placeholder="Enter Credential Token ID (e.g. 1) or Learner Wallet Address (0x...)"
+            placeholder="Enter Credential Token ID or Learner Wallet Address (0x...)"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full bg-slate-900/90 border border-slate-700/80 rounded-2xl pl-12 pr-28 py-3.5 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-primary-500 shadow-xl transition-all"
@@ -306,7 +306,14 @@ const VerifyCredential = () => {
                   <h3 className="text-xs uppercase tracking-widest font-bold text-primary-400">
                     SkillS Protocol &bull; Verified Credential
                   </h3>
-                  <p className="text-2xl font-bold text-white">Token #{credential.id}</p>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <p className="text-2xl font-bold text-white">Token #{credential.id}</p>
+                    {credential.id === 1 && (
+                      <span className="text-[10px] font-semibold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full">
+                        Testnet Genesis Record
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -450,24 +457,14 @@ const VerifyCredential = () => {
         </div>
       )}
 
-      {/* Guide for Judges */}
+      {/* Verifier Information State */}
       {!credential && !loading && !error && (
-        <div className="max-w-2xl mx-auto p-6 bg-slate-900/40 border border-slate-800 rounded-2xl text-center text-xs text-gray-400">
-          <p className="font-semibold text-slate-300 mb-1">💡 For Hackathon Judges & Evaluators:</p>
-          <p className="mb-3">
-            You can verify any issued credential by entering its Token ID (e.g. <span className="font-mono text-primary-400 font-bold">1</span>) or paste the learner's Ethereum wallet address above.
+        <div className="max-w-2xl mx-auto p-8 bg-slate-900/40 border border-slate-800/80 rounded-2xl text-center text-xs text-gray-400">
+          <ShieldCheck className="w-8 h-8 text-primary-400/80 mx-auto mb-3" />
+          <p className="font-semibold text-slate-200 text-sm mb-1.5">How Verification Works</p>
+          <p className="leading-relaxed max-w-lg mx-auto">
+            SkillS credentials are Soulbound ERC-721 tokens minted directly on Ethereum smart contracts. Enter a numeric Token ID or any learner's Ethereum wallet address above to query the smart contract in real time.
           </p>
-          <div className="flex justify-center gap-3">
-            <button
-              onClick={() => {
-                setSearchQuery('1');
-                verifyById('1');
-              }}
-              className="text-primary-400 hover:underline font-mono"
-            >
-              Inspect Token #1 &rarr;
-            </button>
-          </div>
         </div>
       )}
     </div>

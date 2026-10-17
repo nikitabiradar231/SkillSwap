@@ -60,7 +60,7 @@ const Navbar = () => {
                 <NavItem to="/notifications" icon={Bell} label="Requests" pathname={location.pathname} />
                 <NavItem to="/sessions" icon={Calendar} label="Sessions" pathname={location.pathname} />
                 <NavItem to="/chat" icon={MessageSquare} label="Chat" pathname={location.pathname} />
-                <NavItem to="/verify" icon={ShieldCheck} label="Verify NFT" pathname={location.pathname} />
+                <NavItem to="/verify" icon={ShieldCheck} label="Verify" pathname={location.pathname} />
                 <NavItem to="/profile" icon={User} label="Profile" pathname={location.pathname} />
               </>
             ) : (

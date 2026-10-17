@@ -1,7 +1,6 @@
 # 🎓 SkillS — Decentralized Peer Learning & Verified On-Chain Credentials
 
-> **Ethereum Testnet Hackathon Project**  
-> *Transforming peer-to-peer skill sharing with tamper-proof Soulbound ERC-721 achievement badges and ERC-20 SKILL reward tokens.*
+> *Transforming peer-to-peer skill sharing with tamper-proof Soulbound ERC-721 achievement badges and ERC-20 SKILL reward tokens on Ethereum.*
 
 [![Solidity](https://img.shields.io/badge/Solidity-0.8.24-363636?logo=solidity)](https://soliditylang.org/)
 [![Ethereum](https://img.shields.io/badge/Network-Sepolia%20%7C%20Localhost-627EEA?logo=ethereum)](https://sepolia.etherscan.io/)
@@ -10,10 +9,10 @@
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 > [!TIP]
-> **🚀 Live Public Web App Deployment**: The SkillSwap frontend is publicly deployed on Vercel for hackathon judges and evaluators at:  
+> **🚀 Live Public Web App**: The SkillSwap frontend is publicly deployed on Vercel at:  
 > **🔗 [https://client-orpin-xi-50.vercel.app](https://client-orpin-xi-50.vercel.app)**  
-> **Direct Public Verifier**: [https://client-orpin-xi-50.vercel.app/verify/1](https://client-orpin-xi-50.vercel.app/verify/1)  
-> *(Local development via `http://localhost:5173` is also fully supported for offline evaluation).*
+> **Direct Public Verifier**: [https://client-orpin-xi-50.vercel.app/verify](https://client-orpin-xi-50.vercel.app/verify)  
+> **GitHub Repository**: [https://github.com/nikitabiradar231/SkillSwap](https://github.com/nikitabiradar231/SkillSwap)
 
 ---
 
@@ -28,8 +27,8 @@ In traditional online education and skill-sharing platforms:
 **SkillS** is a peer-to-peer decentralized skill exchange and certification platform that unites:
 - **Direct Peer Matching & Real-Time Collaboration**: 1-on-1 skill swaps, chat, and in-app WebRTC video calling.
 - **Soulbound ERC-721 Credentials (`SkillCredentialNFT`)**: Tamper-proof, cryptographically non-transferable on-chain completion certificates minted directly to the learner's Ethereum wallet address upon verified session completion.
-- **Campus & Community Reward Tokens (`SkillRewardToken - SKILL`)**: Automated ERC-20 token rewards granted to both mentors (+50 SKILL) and learners (+25 SKILL) upon milestone verification.
-- **Zero-Trust Public Verifier (`/verify`)**: Open verification portal where recruiters, universities, or hackathon judges can independently inspect the cryptographic status of any credential directly from Ethereum contracts without needing a centralized backend.
+- **Community Reward Tokens (`SkillRewardToken - SKILL`)**: Automated ERC-20 token rewards granted to both mentors (+50 SKILL) and learners (+25 SKILL) upon milestone verification.
+- **Zero-Trust Public Verifier (`/verify`)**: Open verification portal where recruiters, universities, and partners can independently inspect the cryptographic status of any credential directly from Ethereum contracts without needing a centralized backend.
 
 ---
 
@@ -106,7 +105,7 @@ Live on Ethereum Sepolia, verified on-chain, and recorded in [`deployedContracts
 
 #### Live Verified Sepolia Interactions
 - **Live Faucet Claim (+100 SKILL)**: [`0x34a1762b44dabb9640cd5767fb542b9101bc4848c9a52227efd9269b6749b0e1`](https://sepolia.etherscan.io/tx/0x34a1762b44dabb9640cd5767fb542b9101bc4848c9a52227efd9269b6749b0e1)
-- **Live Session Certification & Soulbound Token #1 Mint (+25 SKILL Learner / +50 SKILL Mentor)**: [`0x0fed074c11cf36aee1c6a7cc2414c3aa65e080bf59acc1253ea6e51b9ee185ea`](https://sepolia.etherscan.io/tx/0x0fed074c11cf36aee1c6a7cc2414c3aa65e080bf59acc1253ea6e51b9ee185ea)
+- **Genesis Session Certification Tx**: [`0x0fed074c11cf36aee1c6a7cc2414c3aa65e080bf59acc1253ea6e51b9ee185ea`](https://sepolia.etherscan.io/tx/0x0fed074c11cf36aee1c6a7cc2414c3aa65e080bf59acc1253ea6e51b9ee185ea) *(Initial on-chain certification & reward distribution)*
 
 ### Localhost Deployment Details (`31337`)
 Contracts deployed, validated, and verified on local testnet with confirmed receipts:
@@ -142,7 +141,7 @@ npm run contracts:verify:workflow
 ```
 *Expected output: `🎉 ALL 7 END-TO-END WORKFLOW VERIFICATIONS PASSED!`*
 
-### 4. Deploy Contracts Locally
+### 4. Deploy Contracts Locally (Optional)
 In terminal 1, start the local Hardhat node:
 ```bash
 npm run contracts:node
@@ -166,94 +165,59 @@ npm run server:dev
 
 ---
 
-## 🧪 Hackathon Judge Demonstration Guide & Checklist
+## 🌐 Deployment & Architecture Matrix
 
-### 💡 Why SkillS & Blockchain Credentials?
-- **Real-World Problem**: Resume fraud and credential fabrication run rampant on Web2 platforms. Anyone can claim certificates or skills with zero cryptographic audit trail. Meanwhile, mentors who spend hundreds of hours tutoring peers have no immutable proof of mentorship or portable reputation.
-- **Why Web3 & Soulbound NFTs?**:
-  - **Cryptographic Authenticity**: Only the authorized `SkillProtocolRegistry` can mint credentials upon mutual agreement between mentor and learner.
-  - **Non-Transferability (Soulbound)**: Because knowledge cannot be transferred or sold to another person, the credential NFT strictly reverts on any transfer attempts (`SoulboundTokenCannotBeTransferred`).
-  - **Decentralized Verification**: Anyone (recruiters, hackathon judges, universities) can verify the credential via `/verify/:id` by querying the blockchain directly without trusting a centralized server.
+SkillSwap combines decentralized Web3 smart contracts on Ethereum with an optional centralized backend for Web2 user features:
 
-### 📋 Judge Demonstration Checklist
-
-| # | Workflow Step | Expected Result | Verified Status |
-|---|---|---|---|
-| 1 | **Connect MetaMask** | Wallet connects to Localhost (`31337`) or Sepolia (`11155111`), pill shows address and network status | **PASS** |
-| 2 | **SKILL Faucet Claim** | Click **"Faucet"** in header pill; 100 SKILL tokens minted directly to user wallet | **PASS** |
-| 3 | **Faucet Cooldown Check** | Click **"Faucet"** immediately again; transaction reverts with `FaucetCooldownActive` (24h limit) | **PASS** |
-| 4 | **Certify Learning Session** | Mentor fills certification modal with learner wallet, skill, rating, and notes | **PASS** |
-| 5 | **Soulbound NFT Minting** | Non-transferable ERC-721 credential minted to learner's Ethereum wallet address | **PASS** |
-| 6 | **Token Rewards Distribution** | Mentor automatically receives **+50 SKILL**; learner automatically receives **+25 SKILL** | **PASS** |
-| 7 | **Public Credential Verification** | Visit `/verify/1`; credential details, mentor/learner addresses, rating, and verified badge render | **PASS** |
-| 8 | **Block Explorer Verification** | Click transaction or address link to inspect on local terminal or Sepolia Etherscan | **PASS** |
+| Feature | Supported on Public Deployment (Vercel) | Requires Local Backend (`server/`) | Details |
+|---|:---:|:---:|---|
+| **MetaMask Wallet Connection** | ✅ | — | Non-custodial connection supporting Ethereum Sepolia and Hardhat Localhost |
+| **Public Credential Verifier (`/verify`)** | ✅ | — | Zero-trust verification directly reading Ethereum Sepolia smart contract storage via JSON-RPC |
+| **Direct Route Verification (`/verify/:id`)** | ✅ | — | Direct URLs and browser refreshes supported with client-side SPA routing |
+| **SKILL Balance Reading** | ✅ | — | Real-time `balanceOf(account)` ERC-20 query |
+| **Community Faucet Claim** | ✅ | — | Direct smart contract transaction (`requestFaucet`) with 24h rate-limiting |
+| **On-Chain Session Certification** | ✅ | — | Mentor mints Soulbound NFT and distributes rewards directly via `completeAndCertifySession` |
+| **User Registration & Login** | — | ✅ | MongoDB-backed JWT authentication |
+| **Profile & Avatar Management** | — | ✅ | REST endpoints for user bios, avatar uploads, and skill listings |
+| **Marketplace & Discovery** | — | ✅ | Database querying of teachers, learners, and skill requests |
+| **In-App Direct Chat** | — | ✅ | Socket.io real-time chat with message persistence |
+| **WebRTC Video Calling** | — | ✅ | Socket.io signaling server for peer-to-peer audio/video rooms |
 
 ---
 
-### Step-by-Step Live Demo Execution
+## 📖 Web3 Workflow & Verification Guide
 
-#### Track A: Live Ethereum Sepolia Demo (Pre-Deployed & Ready)
-The SkillS smart contracts are **already live and verified on Ethereum Sepolia**. Judges can evaluate the full live workflow immediately:
-1. **Access the Frontend**:
-   - **Live Web App**: Open [**https://client-orpin-xi-50.vercel.app**](https://client-orpin-xi-50.vercel.app)
-   - *Or local dev*: `npm run client:dev` &rarr; [http://localhost:5173](http://localhost:5173)
-2. **Connect MetaMask to Sepolia**:
-   - Network Name: `Ethereum Sepolia`
-   - Chain ID: `11155111`
-   - RPC URL: `https://ethereum-sepolia-rpc.publicnode.com`
-   - Block Explorer: [https://sepolia.etherscan.io](https://sepolia.etherscan.io)
-3. **Claim Testnet SKILL Tokens**:
-   - Click **"Connect Wallet"** in the top navigation bar.
-   - Click the **"Faucet"** button in the Web3 status badge.
-   - Confirm transaction in MetaMask: your balance increases by **+100 SKILL**.
-   - Click again to verify 24-hour anti-spam cooldown protection.
-4. **Issue & Certify a Peer Credential**:
-   - Navigate to `/sessions`.
-   - Click **"Certify on Chain"** on a completed session (or trigger from session modal).
-   - Enter learner wallet address, skill title (e.g. *Full-Stack Web3 Architecture*), rating (1–5 stars), and notes.
-   - Click **"Issue Credential NFT"** and sign the transaction in MetaMask.
-   - The contract mints the non-transferable Soulbound credential and distributes **+50 SKILL** (Mentor) and **+25 SKILL** (Learner).
-5. **Direct Public Zero-Trust Verification**:
-   - Open `/verify/1` or enter the learner's wallet address (`0xb4138eA2f3EA98F756DeAb619B13D41c1F7230E3`).
-   - View the live on-chain certificate, verification badge, instructor rating, and immutable timestamps directly from Ethereum Sepolia.
+### 1. Web3 Wallet Connection
+1. Open [https://client-orpin-xi-50.vercel.app](https://client-orpin-xi-50.vercel.app).
+2. Click **Connect Wallet** in the navigation bar to connect MetaMask.
+3. If connected to an unsupported network, use the **Switch Network** button to switch to **Ethereum Sepolia** (Chain ID: `11155111`).
 
-#### Track B: Localhost Hardhat Demo (Fully Autonomous Offline)
-If evaluating completely offline or without testnet ETH:
-1. **Start Local Hardhat Node**:
-   ```bash
-   npm run contracts:node
-   ```
-2. **Deploy Local Contracts**:
-   ```bash
-   npm run contracts:deploy:local
-   ```
-3. **Start Client Frontend**:
-   ```bash
-   npm run client:dev
-   ```
-   Open [http://localhost:5173](http://localhost:5173).
-4. **Connect MetaMask**:
-   - Add network: RPC URL `http://127.0.0.1:8545`, Chain ID `31337`, Symbol `ETH`.
-   - Import Hardhat Account #0 (`0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266`).
-5. Perform Faucet, Certification, and Verification steps with instant local block mining.
+### 2. Community SKILL Faucet
+- Click the **Faucet** button in the Web3 status badge to claim **100 SKILL** tokens.
+- The smart contract enforces a strict 24-hour cooldown per address (`FaucetCooldownActive`).
 
----
+### 3. Soulbound Credential Certification
+- When a peer learning session completes, the mentor certifies mastery via the certification modal.
+- The `SkillProtocolRegistry` contract verifies:
+  - The mentor is not certifying themselves (`SelfCertificationNotAllowed`).
+  - The session has not already been certified (`SessionAlreadyCertified`).
+  - The evaluation rating is between 1 and 5 stars (`InvalidRatingBounds`).
+- Upon success, an immutable Soulbound ERC-721 credential is minted to the learner, and reward tokens (+50 SKILL to mentor, +25 SKILL to learner) are distributed.
 
-### ⏱️ Concise 3–5 Minute Judge Demonstration Script
-
-| Timestamp | Phase | What to Show & Say | Key On-Screen Actions |
-|---|---|---|---|
-| **0:00 – 1:00** | **The Problem & Platform Overview** | *"Traditional certificates suffer from resume fraud and centralized database vulnerabilities. SkillS transforms peer learning into cryptographic proof: peers learn via WebRTC video, and mentors certify mastery on-chain using non-transferable Soulbound NFTs and community SKILL reward tokens."* | Open `http://localhost:5173`. Highlight decentralized hero section, architecture, and feature tracks. |
-| **1:00 – 2:00** | **Web3 Identity & SKILL Faucet** | *"SkillS integrates non-custodial wallets seamlessly. Notice our network badge detecting Ethereum Sepolia. With one click on the built-in Faucet, users claim 100 SKILL tokens. If a user immediately tries to claim again, the smart contract's 24-hour rate limit reverts the transaction to prevent abuse."* | Click **Connect Wallet** &rarr; Select Sepolia. Click **Faucet** &rarr; Confirm in MetaMask (+100 SKILL). Click again to demonstrate cooldown guard. |
-| **2:00 – 3:15** | **Session Certification & Soulbound Minting** | *"Once a peer learning session concludes, the mentor certifies completion on-chain. The orchestrator registry checks session uniqueness, blocks self-certification, mints a permanent Soulbound NFT to the learner, and automatically rewards both mentor (+50 SKILL) and learner (+25 SKILL)."* | Navigate to `/sessions` &rarr; Click **Certify on Chain**. Set rating to 5 stars &rarr; Click **Issue Credential NFT**. View transaction hash link to Sepolia Etherscan. |
-| **3:15 – 4:15** | **Zero-Trust Public Verification Portal** | *"Any recruiter, judge, or university can verify credentials with zero authentication and zero trust in our backend. Notice `/verify/1`: the badge confirms cryptographic validity, recipient learner address, mentor address, evaluation rating, and Soulbound non-transferability directly from Ethereum storage."* | Navigate to `/verify/1` or search learner address `0xb4138eA2f3EA98F756DeAb619B13D41c1F7230E3`. Show green **Cryptographically Verified** badge and badge art. |
-| **4:15 – 5:00** | **Contract Security & Architecture Summary** | *"All contracts use Solidity 0.8.24 with OpenZeppelin v5. The credential NFT strictly blocks transfer attempts with `SoulboundTokenCannotBeTransferred`, while only the registry contract holds `MINTER_ROLE`. All 11 unit tests and 7/7 end-to-end workflow verification steps pass."* | Point to Etherscan contract links, test suites (`npm run contracts:test`), and clean production build. |
+### 4. Zero-Trust Public Verifier
+- Navigate to `/verify` or access direct URL `/verify/:id`.
+- Enter any Credential Token ID or learner Ethereum wallet address.
+- The verifier queries the `SkillCredentialNFT` contract directly on-chain and displays:
+  - Cryptographic validity status (Verified / Revoked)
+  - Recipient learner and mentor addresses with Etherscan explorer links
+  - Skill name, category, and evaluation rating (1–5 stars)
+  - Issue timestamp and Soulbound non-transferability standard
 
 ---
 
 ## 🛡️ Automated Tests & Security Verification
 
-All tests run against Hardhat in-memory blockchain:
+All smart contract tests execute against the Hardhat in-memory blockchain:
 ```
   SkillS Protocol Suite
     SkillCredentialNFT (Soulbound Certificate)
@@ -282,7 +246,7 @@ npm run client:build  # Vite production bundle built successfully (0 errors)
 
 ---
 
-## 📋 Hackathon Deliverables Status
+## 📋 Platform Feature Status
 
 - [x] **Smart Contracts Implemented**: `SkillCredentialNFT.sol`, `SkillRewardToken.sol`, `SkillProtocolRegistry.sol`
 - [x] **Automated Test Suite**: 11 unit & integration tests covering roles, soulbound non-transferability, ratings, duplicate prevention, and token rewards.
@@ -290,18 +254,14 @@ npm run client:build  # Vite production bundle built successfully (0 errors)
 - [x] **Web3 Provider & Wallet Connection**: `Web3Context` with MetaMask connection, account/chain listeners, network auto-switch, balance tracking.
 - [x] **On-Chain Certification Workflow**: `IssueCredentialModal.jsx` integrated into session lifecycle.
 - [x] **Public Verification Portal**: Dedicated `/verify` and `/verify/:id` route for zero-cost, zero-backend cryptographic verification.
-- [x] **Testnet Faucet Integration**: In-app claim for 100 SKILL reward tokens with 24-hour rate limit.
-- [x] **Security Review & Clean Environment**: `.env.example` templates created, 0 real private keys committed, `.gitignore` configured.
+- [x] **Community Faucet Integration**: In-app claim for 100 SKILL reward tokens with 24-hour rate limit.
+- [x] **Security Review & Clean Environment**: `.env.example` templates created, 0 private keys committed, `.gitignore` configured.
 
 ---
 
-## 🔮 Future Roadmap & Known Limitations
+## 🔮 Future Roadmap & Enhancements
 
 - **Decentralized Storage Pinning**: Connect directly with Pinata or Web3.Storage for automated JSON IPFS pinning of rich portfolio media.
 - **Layer 2 Deployments**: Deploy canonical registry to Arbitrum Sepolia / Base Sepolia for sub-cent gas fees during high-volume campus onboarding.
 - **Mutual Dual-Signature Verification**: Optional multi-signature requirement where learner must co-sign before certificate minting.
-- **Skill Bounties**: Learners locking SKILL or ETH in an escrow contract that automatically releases to a mentor upon verifiable completion.
-
----
-
-*Built with ❤️ for the Web3 Ethereum Testnet Hackathon.*
+- **Skill Escrow Bounties**: Learners locking SKILL or ETH in an escrow contract that automatically releases to a mentor upon verifiable completion.
