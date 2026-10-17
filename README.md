@@ -134,6 +134,12 @@ npm run contracts:test
 ```
 *Expected output: `11 passing`*
 
+Run the simulated end-to-end workflow verification (7-step integration test):
+```bash
+npm run contracts:verify:workflow
+```
+*Expected output: `🎉 ALL 7 END-TO-END WORKFLOW VERIFICATIONS PASSED!`*
+
 ### 4. Deploy Contracts Locally
 In terminal 1, start the local Hardhat node:
 ```bash

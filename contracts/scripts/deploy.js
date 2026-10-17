@@ -151,6 +151,44 @@ async function main() {
   const localOutputPath = path.join(__dirname, "../deployment-info.json");
   fs.writeFileSync(localOutputPath, JSON.stringify(deploymentData, null, 2));
 
+  // 6. Optional Etherscan Source Verification
+  if (network.name === "sepolia" && process.env.ETHERSCAN_API_KEY) {
+    console.log("\n6. Attempting Etherscan source verification...");
+    const { run } = require("hardhat");
+    try {
+      console.log("Verifying SkillCredentialNFT...");
+      await run("verify:verify", {
+        address: credentialAddress,
+        constructorArguments: [deployer.address],
+      });
+      console.log("✅ Verified SkillCredentialNFT on Etherscan");
+    } catch (err) {
+      console.warn("⚠️ SkillCredentialNFT verification:", err.message);
+    }
+
+    try {
+      console.log("Verifying SkillRewardToken...");
+      await run("verify:verify", {
+        address: rewardAddress,
+        constructorArguments: [deployer.address],
+      });
+      console.log("✅ Verified SkillRewardToken on Etherscan");
+    } catch (err) {
+      console.warn("⚠️ SkillRewardToken verification:", err.message);
+    }
+
+    try {
+      console.log("Verifying SkillProtocolRegistry...");
+      await run("verify:verify", {
+        address: registryAddress,
+        constructorArguments: [credentialAddress, rewardAddress, deployer.address],
+      });
+      console.log("✅ Verified SkillProtocolRegistry on Etherscan");
+    } catch (err) {
+      console.warn("⚠️ SkillProtocolRegistry verification:", err.message);
+    }
+  }
+
   console.log("\n==================================================");
   console.log("🎉 SkillS Smart Contract Suite Deployed Successfully!");
   console.log("Network:              ", network.name);

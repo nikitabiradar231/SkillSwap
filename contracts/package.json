@@ -7,6 +7,7 @@
     "test": "hardhat test",
     "deploy:local": "hardhat run scripts/deploy.js --network localhost",
     "deploy:sepolia": "hardhat run scripts/deploy.js --network sepolia",
+    "verify:workflow": "hardhat run scripts/verify-e2e-workflow.js",
     "node": "hardhat node"
   },
   "devDependencies": {
