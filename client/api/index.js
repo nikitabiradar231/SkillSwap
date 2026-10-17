@@ -67,7 +67,7 @@ async function getDb() {
         } else {
           // Purge test/demo accounts, keep only legitimate users
           remoteDb.users = remoteDb.users.filter(
-            (u) => u.email !== 'priya.sharma@gmail.com' && u.email !== 'alex.rivers@gmail.com' && !u.email.includes('test')
+            (u) => u.email !== 'priya.sharma@gmail.com' && u.email !== 'alex.rivers@gmail.com' && !u.email.includes('test') && !u.email.includes('example.com')
           );
           for (const initUser of INITIAL_DB.users) {
             if (!remoteDb.users.some((u) => u.email === initUser.email)) {
