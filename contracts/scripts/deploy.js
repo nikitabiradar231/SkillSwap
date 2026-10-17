@@ -3,27 +3,61 @@ const fs = require("fs");
 const path = require("path");
 
 async function main() {
-  const [deployer] = await ethers.getSigners();
-  const network = await ethers.provider.getNetwork();
-  const chainId = Number(network.chainId);
+  // Preflight check 1: RPC Provider connectivity
+  let network, chainId;
+  try {
+    network = await ethers.provider.getNetwork();
+    chainId = Number(network.chainId);
+  } catch (rpcErr) {
+    console.error("\n❌ PREFLIGHT ERROR: Unable to communicate with the Ethereum RPC endpoint!");
+    console.error("   Details: ", rpcErr.message);
+    console.error("   Guidance: Ensure SEPOLIA_RPC_URL is valid and reachable in contracts/.env.");
+    console.error("   Suggested fallback: https://ethereum-sepolia-rpc.publicnode.com\n");
+    throw new Error("RPC provider connection failure. Deployment halted.");
+  }
+
+  // Preflight check 2: Signer / Deployer account existence
+  const signers = await ethers.getSigners();
+  if (!signers || signers.length === 0) {
+    console.error("\n❌ PREFLIGHT ERROR: No deployer account configured!");
+    console.error("   Guidance: To deploy on Sepolia, you must configure contracts/.env with your testnet private key:");
+    console.error("   1. Create file: contracts/.env");
+    console.error("   2. Add line:   PRIVATE_KEY=your_64_character_hex_private_key");
+    console.error("   3. Add line:   SEPOLIA_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com\n");
+    throw new Error("No deployer account configured. Deployment halted.");
+  }
+
+  const deployer = signers[0];
+  const balance = await ethers.provider.getBalance(deployer.address);
 
   console.log("==================================================");
   console.log("🚀 Deploying SkillS Smart Contracts Suite");
   console.log("Network Name:    ", network.name);
   console.log("Chain ID:        ", chainId);
   console.log("Deployer Address:", deployer.address);
-  
-  const balance = await ethers.provider.getBalance(deployer.address);
   console.log("Deployer Balance:", ethers.formatEther(balance), "ETH");
   console.log("==================================================");
 
-  // Safety checks
+  // Preflight check 3: Target network chain ID match
   if (network.name === "sepolia" && chainId !== 11155111) {
+    console.error(`\n❌ PREFLIGHT ERROR: Target network mismatch! Expected chainId 11155111 for Sepolia, received ${chainId}`);
     throw new Error(`Target network mismatch! Expected chainId 11155111 for Sepolia, received ${chainId}`);
   }
 
+  // Preflight check 4: Sufficient testnet balance
   if (balance === 0n) {
+    console.error(`\n❌ PREFLIGHT ERROR: Deployer account ${deployer.address} has 0 ETH on Sepolia!`);
+    console.error("   Guidance: Obtain free Sepolia testnet ETH from one of the following faucets:");
+    console.error("   - Google Cloud Web3 Faucet: https://cloud.google.com/application/web3/faucet/ethereum/sepolia");
+    console.error("   - Alchemy Sepolia Faucet:    https://www.alchemy.com/faucets/ethereum-sepolia");
+    console.error("   - PoW Sepolia Faucet:        https://sepolia-faucet.pk910.de/\n");
     throw new Error(`Deployer account ${deployer.address} has 0 ETH. Please fund the account with testnet ETH.`);
+  }
+
+  const minRequired = ethers.parseEther("0.005");
+  if (balance < minRequired) {
+    console.warn(`\n⚠️ PREFLIGHT WARNING: Deployer balance (${ethers.formatEther(balance)} ETH) is low.`);
+    console.warn("   Deploying 3 contracts and configuring roles may require ~0.008 - 0.015 Sepolia ETH depending on gas prices.\n");
   }
 
   // 1. Deploy SkillCredentialNFT (Soulbound ERC-721)

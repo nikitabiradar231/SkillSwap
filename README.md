@@ -98,19 +98,43 @@ Contracts deployed, validated, and verified on local testnet with confirmed rece
 - **`SkillProtocolRegistry`**: [`0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0`](file:///contracts/contracts/SkillProtocolRegistry.sol) (Tx: `0x2b3ab755ea8118f5169458e7ec409a6de528ecef3310fea37539b3f1c21d7e9d`)
 
 ### Sepolia Testnet Deployment Gate (`11155111`)
-The deployment automation script is completely tested and waiting for testnet credentials:
-1. Create `contracts/.env` (using `contracts/.env.example` as a template):
-   ```env
-   SEPOLIA_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
-   PRIVATE_KEY=your_sepolia_private_key_without_0x
-   ETHERSCAN_API_KEY=optional_etherscan_api_key
+The deployment automation pipeline is fully configured and ready to broadcast:
+
+1. **Create the environment file** from the workspace root (using PowerShell):
+   ```powershell
+   Copy-Item 'contracts/.env.example' -Destination 'contracts/.env'
    ```
-2. Ensure the deployer account holds ~0.02 Sepolia test ETH.
-3. Broadcast the deployment:
+   *(Or in VS Code, create a new file `contracts/.env`)*.
+
+2. **Configure your testnet credentials in `contracts/.env`**:
+   ```env
+   # Ethereum Sepolia Testnet RPC URL (Public or Infura/Alchemy)
+   SEPOLIA_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
+
+   # Deployer Private Key for Sepolia Testnet (DO NOT USE MAINNET - NEVER COMMIT REAL KEYS)
+   PRIVATE_KEY=your_64_character_hex_private_key_without_0x
+
+   # Etherscan API Key for contract verification (optional)
+   ETHERSCAN_API_KEY=
+   ```
+
+3. **Fund your deployer wallet with Sepolia test ETH**:
+   - [Google Cloud Web3 Sepolia Faucet](https://cloud.google.com/application/web3/faucet/ethereum/sepolia)
+   - [Alchemy Sepolia Faucet](https://www.alchemy.com/faucets/ethereum-sepolia)
+   - [Sepolia PoW Faucet](https://sepolia-faucet.pk910.de/)
+   *(Deploying all 3 contracts and configuring roles requires ~0.015 - 0.020 Sepolia ETH)*.
+
+4. **Run the preflight diagnostic check**:
+   ```bash
+   npm run contracts:check:sepolia
+   ```
+   *This safely checks your RPC connection, formats your key, and verifies your wallet balance without exposing secrets.*
+
+5. **Broadcast the deployment**:
    ```bash
    npm run contracts:deploy:sepolia
    ```
-The script will deploy all 3 contracts, confirm chain ID `11155111`, verify on-chain bytecode, configure `MINTER_ROLE` permissions, and automatically save the addresses, transaction hashes, and ABIs under `networks["11155111"]` in `client/src/contracts/deployedContracts.json`.
+   The script will deploy all 3 contracts, confirm chain ID `11155111`, verify on-chain bytecode, configure `MINTER_ROLE` permissions, attempt Etherscan verification, and automatically save the addresses, transaction hashes, and ABIs under `networks["11155111"]` in `client/src/contracts/deployedContracts.json`.
 
 ---
 

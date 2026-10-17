@@ -22,7 +22,7 @@ import deployedContracts from '../contracts/deployedContracts.json';
 const VerifyCredential = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { contracts, getExplorerUrl, contractAddresses } = useContext(Web3Context);
+  const { contracts, getExplorerUrl, contractAddresses, chainId } = useContext(Web3Context);
 
   const [searchQuery, setSearchQuery] = useState(id || '');
   const [loading, setLoading] = useState(false);
@@ -35,10 +35,12 @@ const VerifyCredential = () => {
   const getReadOnlyNFTContract = useCallback(() => {
     if (contracts.credentialNFT) return contracts.credentialNFT;
     try {
-      const isSepolia = Boolean(
-        import.meta.env.VITE_SEPOLIA_CREDENTIAL_NFT_ADDRESS ||
-        deployedContracts.networks?.[11155111]?.contracts?.SkillCredentialNFT?.address
-      );
+      const isSepolia =
+        chainId === 11155111 ||
+        Boolean(
+          import.meta.env.VITE_SEPOLIA_CREDENTIAL_NFT_ADDRESS ||
+          deployedContracts.networks?.[11155111]?.contracts?.SkillCredentialNFT?.address
+        );
 
       const rpcUrl = isSepolia
         ? (import.meta.env.VITE_SEPOLIA_RPC_URL || 'https://ethereum-sepolia-rpc.publicnode.com')
@@ -46,16 +48,17 @@ const VerifyCredential = () => {
 
       const provider = new ethers.JsonRpcProvider(rpcUrl);
       const abi = deployedContracts.contracts?.SkillCredentialNFT?.abi;
-      const address =
-        contractAddresses.credentialNFT ||
-        deployedContracts.contracts?.SkillCredentialNFT?.address;
+      let address = contractAddresses.credentialNFT;
+      if (!address && !isSepolia) {
+        address = deployedContracts.contracts?.SkillCredentialNFT?.address;
+      }
       if (!abi || !address) return null;
       return new ethers.Contract(address, abi, provider);
     } catch (err) {
       console.error('Error creating fallback read-only provider:', err);
       return null;
     }
-  }, [contracts.credentialNFT, contractAddresses.credentialNFT]);
+  }, [contracts.credentialNFT, contractAddresses.credentialNFT, chainId]);
 
   const verifyById = useCallback(
     async (tokenIdStr) => {
@@ -71,9 +74,23 @@ const VerifyCredential = () => {
       setLearnerTokens([]);
 
       try {
+        if (chainId === 11155111 && !contractAddresses.isConfigured) {
+          setError('Sepolia smart contracts have not yet been deployed. Please deploy contracts to Sepolia or switch MetaMask to Hardhat Localhost (Chain ID 31337).');
+          setCredential(null);
+          setLoading(false);
+          return;
+        }
+
         const nftContract = getReadOnlyNFTContract();
         if (!nftContract) {
-          throw new Error('Smart contract connection could not be established.');
+          setError(
+            chainId === 11155111 || !contractAddresses.credentialNFT
+              ? 'Sepolia smart contracts have not yet been deployed. Please deploy contracts to Sepolia or switch MetaMask to Hardhat Localhost (Chain ID 31337).'
+              : 'Smart contract connection could not be established. Please ensure the network node is running.'
+          );
+          setCredential(null);
+          setLoading(false);
+          return;
         }
 
         const verification = await nftContract.verifyCredential(tokenId);
@@ -108,7 +125,7 @@ const VerifyCredential = () => {
         setLoading(false);
       }
     },
-    [getReadOnlyNFTContract]
+    [getReadOnlyNFTContract, chainId, contractAddresses.isConfigured, contractAddresses.credentialNFT]
   );
 
   const verifyByLearner = useCallback(
@@ -123,9 +140,21 @@ const VerifyCredential = () => {
       setCredential(null);
 
       try {
+        if (chainId === 11155111 && !contractAddresses.isConfigured) {
+          setError('Sepolia smart contracts have not yet been deployed. Please deploy contracts to Sepolia or switch MetaMask to Hardhat Localhost (Chain ID 31337).');
+          setLoading(false);
+          return;
+        }
+
         const nftContract = getReadOnlyNFTContract();
         if (!nftContract) {
-          throw new Error('Smart contract connection could not be established.');
+          setError(
+            chainId === 11155111 || !contractAddresses.credentialNFT
+              ? 'Sepolia smart contracts have not yet been deployed. Please deploy contracts to Sepolia or switch MetaMask to Hardhat Localhost (Chain ID 31337).'
+              : 'Smart contract connection could not be established.'
+          );
+          setLoading(false);
+          return;
         }
 
         const tokenIds = await nftContract.getLearnerCredentials(learnerAddr);
@@ -145,7 +174,7 @@ const VerifyCredential = () => {
         setLoading(false);
       }
     },
-    [getReadOnlyNFTContract, verifyById]
+    [getReadOnlyNFTContract, verifyById, chainId, contractAddresses.isConfigured, contractAddresses.credentialNFT]
   );
 
   const handleSearch = (e) => {

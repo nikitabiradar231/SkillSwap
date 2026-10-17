@@ -8,6 +8,7 @@
     "contracts:test": "npm --prefix contracts test",
     "contracts:deploy:local": "npm --prefix contracts run deploy:local",
     "contracts:deploy:sepolia": "npm --prefix contracts run deploy:sepolia",
+    "contracts:check:sepolia": "npm --prefix contracts run check:sepolia",
     "contracts:verify:workflow": "npm --prefix contracts run verify:workflow",
     "contracts:node": "npm --prefix contracts run node",
     "client:dev": "npm --prefix client run dev",
