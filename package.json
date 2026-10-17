@@ -1,0 +1,30 @@
+{
+  "name": "skills-platform",
+  "version": "1.0.0",
+  "description": "SkillS - Decentralized Peer-to-Peer Learning & Blockchain-Verified Skill Credentials",
+  "scripts": {
+    "install:all": "npm --prefix contracts install && npm --prefix client install && npm --prefix server install",
+    "contracts:compile": "npm --prefix contracts run compile",
+    "contracts:test": "npm --prefix contracts test",
+    "contracts:deploy:local": "npm --prefix contracts run deploy:local",
+    "contracts:deploy:sepolia": "npm --prefix contracts run deploy:sepolia",
+    "contracts:node": "npm --prefix contracts run node",
+    "client:dev": "npm --prefix client run dev",
+    "client:build": "npm --prefix client run build",
+    "client:lint": "npm --prefix client run lint",
+    "server:dev": "npm --prefix server run nodemon server.js",
+    "server:start": "node server/server.js"
+  },
+  "keywords": [
+    "ethereum",
+    "solidity",
+    "soulbound-nft",
+    "erc721",
+    "erc20",
+    "skills",
+    "education",
+    "web3"
+  ],
+  "author": "SkillS Team",
+  "license": "MIT"
+}
