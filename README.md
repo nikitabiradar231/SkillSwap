@@ -89,52 +89,27 @@ All smart contracts are developed with **Solidity `^0.8.24`**, target the **Canc
 | Network | Chain ID | Status | SkillCredentialNFT | SkillRewardToken | SkillProtocolRegistry |
 |---|---|---|---|---|---|
 | **Hardhat Localhost** | `31337` | **PASS (VERIFIED)** | `0x5FbDB2315678afecb367f032d93F642f64180aa3` | `0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512` | `0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0` |
-| **Ethereum Sepolia** | `11155111` | **PENDING** | *Awaiting `contracts/.env`* | *Awaiting `contracts/.env`* | *Awaiting `contracts/.env`* |
+| **Ethereum Sepolia** | `11155111` | **PASS (LIVE ON-CHAIN)** | [`0x601C9a636CE639789072c8214b24b1E5D0B5366D`](https://sepolia.etherscan.io/address/0x601C9a636CE639789072c8214b24b1E5D0B5366D) | [`0x1122d0721ac14c288C9a34682B153D8Ec7Cc481F`](https://sepolia.etherscan.io/address/0x1122d0721ac14c288C9a34682B153D8Ec7Cc481F) | [`0x9a2B851414EEa9b8752B41A4a3aB14ea2B932cfF`](https://sepolia.etherscan.io/address/0x9a2B851414EEa9b8752B41A4a3aB14ea2B932cfF) |
+
+### Ethereum Sepolia Testnet Details (`11155111`)
+Live on Ethereum Sepolia, verified on-chain, and recorded in [`deployedContracts.json`](file:///client/src/contracts/deployedContracts.json):
+- **Deployer Wallet**: [`0x31e9117D0BfceA67088aA96e356473c52CF9f9fF`](https://sepolia.etherscan.io/address/0x31e9117D0BfceA67088aA96e356473c52CF9f9fF)
+- **`SkillCredentialNFT`**: [`0x601C9a636CE639789072c8214b24b1E5D0B5366D`](https://sepolia.etherscan.io/address/0x601C9a636CE639789072c8214b24b1E5D0B5366D)  
+  *Deployment Tx*: [`0xd8807e4a95deeef8eff59e444bd29401e9ef5dbc402d8ebe18b0aa8f9e1597e0`](https://sepolia.etherscan.io/tx/0xd8807e4a95deeef8eff59e444bd29401e9ef5dbc402d8ebe18b0aa8f9e1597e0)
+- **`SkillRewardToken`**: [`0x1122d0721ac14c288C9a34682B153D8Ec7Cc481F`](https://sepolia.etherscan.io/address/0x1122d0721ac14c288C9a34682B153D8Ec7Cc481F)  
+  *Deployment Tx*: [`0x2f82675f7cf876e2f96fab90909a0018dea9282a11e88d7a15320f3bf019b8a4`](https://sepolia.etherscan.io/tx/0x2f82675f7cf876e2f96fab90909a0018dea9282a11e88d7a15320f3bf019b8a4)
+- **`SkillProtocolRegistry`**: [`0x9a2B851414EEa9b8752B41A4a3aB14ea2B932cfF`](https://sepolia.etherscan.io/address/0x9a2B851414EEa9b8752B41A4a3aB14ea2B932cfF)  
+  *Deployment Tx*: [`0x09661adafb44b5d853140aca1ba72aaf5f67fb4967e040f8590c54feb0e3e2aa`](https://sepolia.etherscan.io/tx/0x09661adafb44b5d853140aca1ba72aaf5f67fb4967e040f8590c54feb0e3e2aa)
+
+#### Live Verified Sepolia Interactions
+- **Live Faucet Claim (+100 SKILL)**: [`0x34a1762b44dabb9640cd5767fb542b9101bc4848c9a52227efd9269b6749b0e1`](https://sepolia.etherscan.io/tx/0x34a1762b44dabb9640cd5767fb542b9101bc4848c9a52227efd9269b6749b0e1)
+- **Live Session Certification & Soulbound Token #1 Mint (+25 SKILL Learner / +50 SKILL Mentor)**: [`0x0fed074c11cf36aee1c6a7cc2414c3aa65e080bf59acc1253ea6e51b9ee185ea`](https://sepolia.etherscan.io/tx/0x0fed074c11cf36aee1c6a7cc2414c3aa65e080bf59acc1253ea6e51b9ee185ea)
 
 ### Localhost Deployment Details (`31337`)
 Contracts deployed, validated, and verified on local testnet with confirmed receipts:
 - **`SkillCredentialNFT`**: [`0x5FbDB2315678afecb367f032d93F642f64180aa3`](file:///contracts/contracts/SkillCredentialNFT.sol) (Tx: `0x0c466c4bd5df9e7f7e46941a4cd5877b2ad64da81f0769c1430f90c905a67808`)
 - **`SkillRewardToken`**: [`0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512`](file:///contracts/contracts/SkillRewardToken.sol) (Tx: `0xce9c5f6bc1384f3fdf4e12d9795e6713869a90b956139a779033da1824de4cd1`)
 - **`SkillProtocolRegistry`**: [`0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0`](file:///contracts/contracts/SkillProtocolRegistry.sol) (Tx: `0x2b3ab755ea8118f5169458e7ec409a6de528ecef3310fea37539b3f1c21d7e9d`)
-
-### Sepolia Testnet Deployment Gate (`11155111`)
-The deployment automation pipeline is fully configured and ready to broadcast:
-
-1. **Create the environment file** from the workspace root (using PowerShell):
-   ```powershell
-   Copy-Item 'contracts/.env.example' -Destination 'contracts/.env'
-   ```
-   *(Or in VS Code, create a new file `contracts/.env`)*.
-
-2. **Configure your testnet credentials in `contracts/.env`**:
-   ```env
-   # Ethereum Sepolia Testnet RPC URL (Public or Infura/Alchemy)
-   SEPOLIA_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
-
-   # Deployer Private Key for Sepolia Testnet (DO NOT USE MAINNET - NEVER COMMIT REAL KEYS)
-   PRIVATE_KEY=your_64_character_hex_private_key_without_0x
-
-   # Etherscan API Key for contract verification (optional)
-   ETHERSCAN_API_KEY=
-   ```
-
-3. **Fund your deployer wallet with Sepolia test ETH**:
-   - [Google Cloud Web3 Sepolia Faucet](https://cloud.google.com/application/web3/faucet/ethereum/sepolia)
-   - [Alchemy Sepolia Faucet](https://www.alchemy.com/faucets/ethereum-sepolia)
-   - [Sepolia PoW Faucet](https://sepolia-faucet.pk910.de/)
-   *(Deploying all 3 contracts and configuring roles requires ~0.015 - 0.020 Sepolia ETH)*.
-
-4. **Run the preflight diagnostic check**:
-   ```bash
-   npm run contracts:check:sepolia
-   ```
-   *This safely checks your RPC connection, formats your key, and verifies your wallet balance without exposing secrets.*
-
-5. **Broadcast the deployment**:
-   ```bash
-   npm run contracts:deploy:sepolia
-   ```
-   The script will deploy all 3 contracts, confirm chain ID `11155111`, verify on-chain bytecode, configure `MINTER_ROLE` permissions, attempt Etherscan verification, and automatically save the addresses, transaction hashes, and ABIs under `networks["11155111"]` in `client/src/contracts/deployedContracts.json`.
 
 ---
 
