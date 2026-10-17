@@ -104,10 +104,11 @@ async function saveDb(db) {
 function getUserIdFromReq(req, users) {
   const token = req.headers['x-auth-token'] || req.headers['authorization'];
   if (!token) return null;
-  const clean = String(token).replace(/^Bearer\s+/, '');
+  const clean = String(token).replace(/^Bearer\s+/, '').trim();
   if (clean.startsWith('token_') || clean.startsWith('jwt_')) {
-    const parts = clean.split('_');
-    const candId = parts[1];
+    const withoutPrefix = clean.replace(/^(jwt_|token_)/, '');
+    const lastUnderscore = withoutPrefix.lastIndexOf('_');
+    const candId = lastUnderscore !== -1 ? withoutPrefix.substring(0, lastUnderscore) : withoutPrefix;
     const match = users.find((u) => u._id === candId || u.id === candId);
     if (match) return match._id;
   }
