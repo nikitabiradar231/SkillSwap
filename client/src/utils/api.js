@@ -1,10 +1,5 @@
 import axios from 'axios';
 
-// Determine if we should run in standalone client persistence mode (e.g. on public Vercel HTTPS without dedicated backend)
-const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
-const configuredApiUrl = import.meta.env.VITE_API_URL;
-const isLocalhostApi = !configuredApiUrl || configuredApiUrl.startsWith('http://localhost') || configuredApiUrl.startsWith('http://127.0.0.1');
-const useStandaloneMode = isHttps && isLocalhostApi;
 
 const STORAGE_KEYS = {
   USERS: 'skills_users_db',
@@ -14,9 +9,49 @@ const STORAGE_KEYS = {
   MESSAGES: 'skills_messages_db'
 };
 
+const SEED_USERS = [
+  {
+    _id: 'usr_sppu_666',
+    id: 'usr_sppu_666',
+    name: 'Sppu',
+    email: 'biradarnikita666@gmail.com',
+    password: 'Password123!',
+    bio: 'Decentralized learner & smart contract developer.',
+    profilePic: '',
+    upiId: '',
+    skills: [
+      { name: 'go', price: 0 },
+      { name: 'smart contract', price: 0 }
+    ],
+    skillsToLearn: ['java', 'c++'],
+    walletAddress: '',
+    createdAt: new Date().toISOString()
+  },
+  {
+    _id: 'usr_nik_300',
+    id: 'usr_nik_300',
+    name: 'Nik',
+    email: 'nikitabiradar300@gmail.com',
+    password: 'Password123!',
+    bio: 'Peer learner exploring Web3 architecture.',
+    profilePic: '',
+    upiId: '',
+    skills: [
+      { name: 'Full-Stack Web3', price: 0 }
+    ],
+    skillsToLearn: ['Smart Contracts', 'Solidity'],
+    walletAddress: '0x31e9117D0BfceA67088aA96e356473c52CF9f9fF',
+    createdAt: new Date().toISOString()
+  }
+];
+
 function getStorage(key, defaultVal = []) {
   try {
     const val = localStorage.getItem(key);
+    if (!val && key === STORAGE_KEYS.USERS) {
+      localStorage.setItem(key, JSON.stringify(SEED_USERS));
+      return SEED_USERS;
+    }
     return val ? JSON.parse(val) : defaultVal;
   } catch {
     return defaultVal;
@@ -316,9 +351,15 @@ async function handleLocalRequest(method, url, data = {}) {
   return { status: 200, data: [] };
 }
 
+// Default to relative /api on HTTPS (Vercel) so all requests hit the shared Serverless API & Blob
+const defaultBaseUrl =
+  typeof window !== 'undefined' && window.location.protocol === 'https:'
+    ? '/api'
+    : (import.meta.env.VITE_API_URL || 'http://localhost:5000/api');
+
 // Create Axios client for normal backend communication
 const axiosClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  baseURL: defaultBaseUrl,
   headers: {
     'Content-Type': 'application/json'
   }
@@ -335,12 +376,9 @@ axiosClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Unified API surface that works transparently both with live backends and in standalone static environments
+// Unified API surface: calls shared Vercel Serverless Function & Blob, falling back to local storage if offline
 const api = {
   get: async (url, config) => {
-    if (useStandaloneMode) {
-      return handleLocalRequest('GET', url);
-    }
     try {
       return await axiosClient.get(url, config);
     } catch (err) {
@@ -351,9 +389,6 @@ const api = {
     }
   },
   post: async (url, data, config) => {
-    if (useStandaloneMode) {
-      return handleLocalRequest('POST', url, data);
-    }
     try {
       return await axiosClient.post(url, data, config);
     } catch (err) {
@@ -364,9 +399,6 @@ const api = {
     }
   },
   put: async (url, data, config) => {
-    if (useStandaloneMode) {
-      return handleLocalRequest('PUT', url, data);
-    }
     try {
       return await axiosClient.put(url, data, config);
     } catch (err) {
@@ -377,9 +409,6 @@ const api = {
     }
   },
   delete: async (url, config) => {
-    if (useStandaloneMode) {
-      return handleLocalRequest('DELETE', url);
-    }
     try {
       return await axiosClient.delete(url, config);
     } catch (err) {

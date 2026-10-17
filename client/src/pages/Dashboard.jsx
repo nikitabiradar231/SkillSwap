@@ -50,7 +50,7 @@ const UserCard = ({ u }) => {
             <h3 className="font-semibold text-white group-hover/user:text-primary-400 transition-colors truncate">{u.name}</h3>
             {u.skills?.length > 0 && (
               <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20 shrink-0">
-                ₹{Math.min(...u.skills.map(s => s.price || 0))}+
+                ₹{Math.min(...u.skills.map(s => (typeof s === 'object' ? s.price : 0) || 0))}+
               </span>
             )}
             {u.walletAddress && (
@@ -72,7 +72,7 @@ const UserCard = ({ u }) => {
           <div className="flex flex-wrap gap-1.5">
             {u.skills.slice(0, 5).map((s, i) => (
               <span key={i} className="px-2 py-0.5 bg-primary-900/50 text-primary-300 rounded-full text-[10px] border border-primary-500/20 flex items-center gap-1">
-                {s.name} <span className="text-emerald-400 font-bold">₹{s.price}</span>
+                {typeof s === 'string' ? s : s.name} <span className="text-emerald-400 font-bold">₹{typeof s === 'object' ? s.price : 0}</span>
               </span>
             ))}
             {u.skills.length > 5 && <span className="text-xs text-gray-500">+{u.skills.length - 5}</span>}
@@ -88,7 +88,7 @@ const UserCard = ({ u }) => {
           </p>
           <div className="flex flex-wrap gap-1.5">
             {u.skillsToLearn.slice(0, 5).map((s, i) => (
-              <span key={i} className="px-2 py-0.5 bg-green-900/50 text-green-300 rounded-full text-xs border border-green-500/20">{s}</span>
+              <span key={i} className="px-2 py-0.5 bg-green-900/50 text-green-300 rounded-full text-xs border border-green-500/20">{typeof s === 'string' ? s : s?.name}</span>
             ))}
             {u.skillsToLearn.length > 5 && <span className="text-xs text-gray-500">+{u.skillsToLearn.length - 5}</span>}
           </div>
@@ -128,14 +128,18 @@ const UserCard = ({ u }) => {
                 <div className="mb-4">
                   <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Learn From {u.name}</label>
                   <div className="flex flex-wrap gap-2">
-                    {u.skills.map((s, i) => (
-                      <button key={i} type="button"
-                        onClick={() => { setSkill(s.name); setPrice(s.price); }}
-                        className={`px-3 py-1 rounded-full text-xs border transition-all flex items-center gap-2 ${skill === s.name ? 'bg-primary-600 border-primary-500 text-white' : 'bg-slate-800 border-slate-600 text-gray-300 hover:border-primary-500'}`}
-                      >
-                        {s.name} <span className={`text-[10px] font-bold ${skill === s.name ? 'text-primary-200' : 'text-emerald-400'}`}>₹{s.price}</span>
-                      </button>
-                    ))}
+                    {u.skills.map((s, i) => {
+                      const sName = typeof s === 'string' ? s : s.name;
+                      const sPrice = typeof s === 'object' ? s.price : 0;
+                      return (
+                        <button key={i} type="button"
+                          onClick={() => { setSkill(sName); setPrice(sPrice); }}
+                          className={`px-3 py-1 rounded-full text-xs border transition-all flex items-center gap-2 ${skill === sName ? 'bg-primary-600 border-primary-500 text-white' : 'bg-slate-800 border-slate-600 text-gray-300 hover:border-primary-500'}`}
+                        >
+                          {sName} <span className={`text-[10px] font-bold ${skill === sName ? 'text-primary-200' : 'text-emerald-400'}`}>₹{sPrice}</span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -168,14 +172,17 @@ const UserCard = ({ u }) => {
                     <label className="block text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-2">Offer Your Skill In Exchange</label>
                     <div className="flex flex-wrap gap-2">
                       {currentUser?.skills?.length > 0 ? (
-                        currentUser.skills.map((s, i) => (
-                          <button key={i} type="button"
-                            onClick={() => setOfferedSkill(s.name)}
-                            className={`px-3 py-1 rounded-full text-xs border transition-all ${offeredSkill === s.name ? 'bg-indigo-600 border-indigo-500 text-white' : 'bg-slate-800 border-slate-700 text-gray-400 hover:border-indigo-500'}`}
-                          >
-                            {s.name}
-                          </button>
-                        ))
+                        currentUser.skills.map((s, i) => {
+                          const sName = typeof s === 'string' ? s : s.name;
+                          return (
+                            <button key={i} type="button"
+                              onClick={() => setOfferedSkill(sName)}
+                              className={`px-3 py-1 rounded-full text-xs border transition-all ${offeredSkill === sName ? 'bg-indigo-600 border-indigo-500 text-white' : 'bg-slate-800 border-slate-700 text-gray-400 hover:border-indigo-500'}`}
+                            >
+                              {sName}
+                            </button>
+                          );
+                        })
                       ) : (
                         <p className="text-[10px] text-red-400">You must add skills to your profile to swap!</p>
                       )}
@@ -218,7 +225,8 @@ const Dashboard = () => {
           api.get('/skills/users'),
           api.get('/sessions')
         ]);
-        setUsers(usersRes.data.filter(u => u._id !== user?._id));
+        const currentId = user?._id || user?.id;
+        setUsers(usersRes.data.filter(u => (u._id || u.id) !== currentId));
         setSessions(sessionsRes.data.filter(s => s.status === 'scheduled'));
       } catch (err) {
         console.error(err);
@@ -229,11 +237,11 @@ const Dashboard = () => {
   }, [user]);
 
   const filtered = users.filter(u => {
-    const q = search.toLowerCase();
+    const q = search.trim().toLowerCase();
     const matchesSearch = !q ||
       u.name?.toLowerCase().includes(q) ||
-      u.skills?.some(s => s.toLowerCase().includes(q)) ||
-      u.skillsToLearn?.some(s => s.toLowerCase().includes(q));
+      u.skills?.some(s => (typeof s === 'string' ? s : s?.name || '').toLowerCase().includes(q)) ||
+      u.skillsToLearn?.some(s => (typeof s === 'string' ? s : s?.name || '').toLowerCase().includes(q));
     const matchesFilter =
       filter === 'all' ||
       (filter === 'teachers' && u.skills?.length > 0) ||

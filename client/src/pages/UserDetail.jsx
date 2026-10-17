@@ -165,17 +165,21 @@ const UserDetail = () => {
 
               {profile.skills?.length > 0 ? (
                 <div className="flex flex-col gap-3">
-                  {profile.skills.map((s, i) => (
-                    <div key={i} className="bg-[#0f172a] border border-slate-700/50 rounded-xl px-5 py-4 flex justify-between items-center shadow-sm">
-                      <div>
-                        <p className="text-sm font-semibold text-slate-200">{s.name}</p>
-                        <p className="text-[11px] text-slate-500 mt-0.5 flex items-center gap-1">
-                          <CheckCircle className="w-3 h-3 text-blue-400" /> Available
-                        </p>
+                  {profile.skills.map((s, i) => {
+                    const sName = typeof s === 'string' ? s : s?.name;
+                    const sPrice = typeof s === 'object' ? s?.price : 0;
+                    return (
+                      <div key={i} className="bg-[#0f172a] border border-slate-700/50 rounded-xl px-5 py-4 flex justify-between items-center shadow-sm">
+                        <div>
+                          <p className="text-sm font-semibold text-slate-200">{sName}</p>
+                          <p className="text-[11px] text-slate-500 mt-0.5 flex items-center gap-1">
+                            <CheckCircle className="w-3 h-3 text-blue-400" /> Available
+                          </p>
+                        </div>
+                        <p className="text-base font-bold text-emerald-400">₹{sPrice ?? 0}</p>
                       </div>
-                      <p className="text-base font-bold text-emerald-400">₹{s.price}</p>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               ) : (
                 <p className="text-sm text-slate-500 italic">No skills listed yet.</p>
@@ -230,15 +234,19 @@ const UserDetail = () => {
                 <div>
                   <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3">1. Select Skill</label>
                   <div className="flex flex-col gap-2">
-                    {profile.skills.map((s, i) => (
-                      <button key={i} type="button"
-                        onClick={() => { setSelectedSkill(s.name); setSelectedPrice(s.price); }}
-                        className={`w-full px-4 py-3 rounded-xl text-left border transition-colors flex justify-between items-center text-sm ${selectedSkill === s.name ? 'bg-blue-600/10 border-blue-500/50 text-slate-200' : 'bg-[#0f172a] border-slate-700/50 text-slate-400 hover:border-slate-600'}`}
-                      >
-                        <span className="font-semibold">{s.name}</span>
-                        <span className={`font-bold ${selectedSkill === s.name ? 'text-blue-400' : 'text-emerald-400'}`}>₹{s.price}</span>
-                      </button>
-                    ))}
+                    {profile.skills.map((s, i) => {
+                      const sName = typeof s === 'string' ? s : s?.name;
+                      const sPrice = typeof s === 'object' ? s?.price : 0;
+                      return (
+                        <button key={i} type="button"
+                          onClick={() => { setSelectedSkill(sName); setSelectedPrice(sPrice); }}
+                          className={`w-full px-4 py-3 rounded-xl text-left border transition-colors flex justify-between items-center text-sm ${selectedSkill === sName ? 'bg-blue-600/10 border-blue-500/50 text-slate-200' : 'bg-[#0f172a] border-slate-700/50 text-slate-400 hover:border-slate-600'}`}
+                        >
+                          <span className="font-semibold">{sName}</span>
+                          <span className={`font-bold ${selectedSkill === sName ? 'text-blue-400' : 'text-emerald-400'}`}>₹{sPrice ?? 0}</span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
